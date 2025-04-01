@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "901333900296",
+    "project_id": "epa-fyp",
+    "storage_bucket": "epa-fyp.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:901333900296:android:f03cd9f68ec9bfd918c5bd",
+        "android_client_info": {
+          "package_name": "com.company.epa"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBWWST2EeP3jseDNDD0oGPeW6mp8GVChGA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
