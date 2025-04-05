@@ -1,0 +1,9 @@
+import { Text, View } from "react-native";
+
+export default function Home(){
+    return (
+      <View>
+          <Text style={{fontSize:30}}>Forum Screen</Text>
+      </View>
+    )
+}

@@ -2,9 +2,8 @@ import { Text, View } from "react-native";
 
 export default function Home(){
     return (
-        <View>
-            <Text style={{fontSize:30}}>Test Screen</Text>
-        </View>
+      <View>
+          <Text style={{fontSize:30}}>Account Screen</Text>
+      </View>
     )
 }
-
