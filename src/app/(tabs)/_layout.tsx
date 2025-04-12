@@ -34,6 +34,7 @@ export default function _layout (){
                 name="account"
                 options={{
                     title:'Account', 
+                    headerShown: false,
                     tabBarIcon: ({color}) => <FontAwesome size={28} name="user" color={color}/>
                 }}
             />
