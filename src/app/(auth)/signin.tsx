@@ -6,10 +6,9 @@ import { Heading } from "../../components/ui/heading";
 import { EyeIcon, EyeOffIcon } from "../../components/ui/icon";
 import { Input, InputField, InputIcon, InputSlot } from "../../components/ui/input";
 import { Text } from "../../components/ui/text";
-import { VStack, } from "../../components/ui/vstack";
-import { auth } from "../../utils/firebaseConfig";
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
-import { FirebaseError } from "firebase/app";
+import { VStack } from "../../components/ui/vstack";
+import { useAuthController } from "../../hooks/useAuthController";
+;
 
 export default function SignIn(){
 
@@ -17,30 +16,47 @@ export default function SignIn(){
     const [password, setPassword]  = useState('');
     const [showPassword, setShowPassword] = useState(false);
     const [loading, setLoading] = useState(false);
+    const {signUp, signIn} = useAuthController();
 
-    const signUp = async () => {
-        setLoading(true);
-        try{
-            await createUserWithEmailAndPassword(auth, email, password);
-            alert('Check your email for verification');
-        }catch(e:any){
-            const err = e as FirebaseError;
-            alert('Registration failed' + err.message);
-        }finally{
-            setLoading(false);
-        }
+    // const signUp = async () => {
+    //     setLoading(true);
+    //     try{
+    //         await registerUser(email, password);
+    //         alert('Check your email for verification');
+    //     }catch(e:any){
+    //         const err = e as FirebaseError;
+    //         alert('Registration failed' + err.message);
+    //     }finally{
+    //         setLoading(false);
+    //     }
+    // }
+
+    // const signIn = async () => {
+    //     setLoading(true);
+    //     try{
+    //         await loginUser(email, password);
+    //     }catch(e:any){
+    //         const err = e as FirebaseError;
+    //         alert('Sign in failed' + err.message);
+    //     }finally{
+    //         setLoading(false);
+    //     }      
+    // }
+
+    const handleError = (message: string) => {
+      alert('Error' + message);
     }
 
-    const signIn = async () => {
-        setLoading(true);
-        try{
-            await signInWithEmailAndPassword(auth, email, password);
-        }catch(e:any){
-            const err = e as FirebaseError;
-            alert('Sign in failed' + err.message);
-        }finally{
-            setLoading(false);
-        }      
+    const handleSignUp = async() => {
+      setLoading(true);
+      await signUp(email, password, handleError);
+      setLoading(false);
+    }
+
+    const handleSignIn = async() => {
+      setLoading(true);
+      await signIn(email, password, handleError);
+      setLoading(false);
     }
 
     const togglePasswordVisibility = () => {
@@ -53,6 +69,7 @@ export default function SignIn(){
                 <VStack>
                     <Heading className="text-3xl text-green-400 pt-16">Login</Heading>
                     <Text className="text-gray-500 text-base pt-4">Welcome back to the app</Text>
+
                     <FormControl>
                         <FormControlLabelText className="text-xl text-black-900 pt-12 pb-2">
                             Email Address
@@ -70,6 +87,7 @@ export default function SignIn(){
                             className="rounded-lg"
                         />
                     </Input>
+
                     <FormControl>
                         <FormControlLabelText className="text-xl text-black-900 pt-8 pb-2">
                             Password
@@ -90,14 +108,15 @@ export default function SignIn(){
                             <InputIcon as={showPassword? EyeIcon : EyeOffIcon}></InputIcon>
                         </InputSlot>
                     </Input>
+
                     {loading ? (
                         <ActivityIndicator size={"small"} color="#0D5BC4" className="pt-8"/>
                         ) : (
                             <>
-                                <Button className="bg-emerald-400 mt-10 rounded-lg" onPress={signIn}>
+                                <Button className="bg-emerald-400 mt-10 rounded-lg" onPress={handleSignIn}>
                                     <ButtonText>Sign In</ButtonText>
                                 </Button>
-                                <Button className="bg-emerald-400 mt-10 rounded-lg" onPress={signUp}>
+                                <Button className="bg-emerald-400 mt-10 rounded-lg" onPress={handleSignUp}>
                                     <ButtonText>Create Account</ButtonText>
                                 </Button> 
                             </>
