@@ -6,6 +6,7 @@ import DashboardIcon from "../../components/custom/dashboardIcon";
 import HomeSlider from "../../components/custom/homeSlider";
 import { auth } from "../../utils/firebaseConfig";
 
+
 export default function Home(){
     const router = useRouter();
 

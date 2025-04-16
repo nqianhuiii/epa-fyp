@@ -6,7 +6,7 @@ import { router } from "expo-router";
 
 export const useAuth = () => {
     const setUser = useAuthStore((state) => state.setUser)
-    const [initializing, setInitializing] = useState(true);  // show laoding spinner while checking auth state
+    const [initializing, setInitializing] = useState(true);  // to show laoding spinner while checking auth state
     
     useEffect(() => {
         const subscriber = onAuthStateChanged(auth, (user) => {

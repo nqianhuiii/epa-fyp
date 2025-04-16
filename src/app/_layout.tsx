@@ -18,7 +18,9 @@ export default function Layout(){
 
   return (
     <GluestackUIProvider mode="light">
-      <Stack/>
+      <View className= "flex-1 px-5 bg-white">
+        <Stack screenOptions={{ headerShown: false }}/>
+      </View>
     </GluestackUIProvider>
   );
 }

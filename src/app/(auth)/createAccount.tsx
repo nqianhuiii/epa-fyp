@@ -1,5 +1,6 @@
+import { useRouter } from "expo-router";
 import { useState } from "react";
-import { ActivityIndicator, KeyboardAvoidingView, SafeAreaView, View } from "react-native";
+import { ActivityIndicator, KeyboardAvoidingView, SafeAreaView } from "react-native";
 import { Alert, AlertIcon, AlertText } from "../../components/ui/alert";
 import { Button, ButtonText } from "../../components/ui/button";
 import { FormControl, FormControlLabelText } from "../../components/ui/form-control";
@@ -9,16 +10,17 @@ import { Input, InputField, InputIcon, InputSlot } from "../../components/ui/inp
 import { Text } from "../../components/ui/text";
 import { VStack } from "../../components/ui/vstack";
 import { useAuthController } from "../../hooks/useAuthController";
-import { useRouter } from "expo-router";
 
-export default function SignIn(){
+export default function CreateAccount(){
+    const [fullName, setFullName] = useState('');
+    const [userName, setUserName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword]  = useState('');
     const [showPassword, setShowPassword] = useState(false);
     const [loading, setLoading] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
     const [showError, setShowError] = useState(false);
-    const {signUp, signIn} = useAuthController();
+    const {signUp} = useAuthController();
 
     const handleError = (message: string) => {
       console.log("Setting error:", message);
@@ -31,10 +33,9 @@ export default function SignIn(){
       }, 3000);
     }
 
-    const handleSignIn = async() => {
+    const handleSignUp = async() => {
       setLoading(true);
-      await signIn(email, password, handleError);
-      console.log("value of showError", showError);
+      await signUp(email, password, fullName, userName, handleError);
       setLoading(false);
     }
 
@@ -54,11 +55,45 @@ export default function SignIn(){
           )}
             <KeyboardAvoidingView behavior="padding" >
                 <VStack className="pt-24">
-                    <Heading className="text-3xl text-green-400">Login</Heading>
-                    <Text className="text-gray-500 text-base pt-4">Welcome back to the app</Text>
+                    <Heading className="text-3xl text-green-400">Create Account</Heading>
+                    <Text className="text-gray-500 text-base pt-4">Let's get you started with your new account!</Text>
 
                     <FormControl>
-                        <FormControlLabelText className="text-xl text-black-900 mt-12">
+                        <FormControlLabelText className="text-xl text-black-900 mt-12 mb-2">
+                            Full Name
+                        </FormControlLabelText>
+                    </FormControl>
+                    <Input>
+                        <InputField
+                            value={fullName}
+                            onChangeText={setFullName}
+                            type="text"
+                            autoCapitalize="none"
+                            autoCorrect={false}
+                            placeholder="Enter your full name"
+                            className="rounded-lg"
+                        />
+                    </Input>
+
+                    <FormControl>
+                        <FormControlLabelText className="text-xl text-black-900 mt-8 mb-2">
+                            User Name
+                        </FormControlLabelText>
+                    </FormControl>
+                    <Input>
+                        <InputField
+                            value={userName}
+                            onChangeText={setUserName}
+                            type="text"
+                            autoCapitalize="none"
+                            autoCorrect={false}
+                            placeholder="Enter your username"
+                            className="rounded-lg"
+                        />
+                    </Input>
+
+                    <FormControl>
+                        <FormControlLabelText className="text-xl text-black-900 mt-8 mb-2">
                             Email Address
                         </FormControlLabelText>
                     </FormControl>
@@ -97,23 +132,18 @@ export default function SignIn(){
                     </Input>
 
                     {loading ? (
-                        <ActivityIndicator size={"small"} color="#0D5BC4" className="pt-8"/>
+                        <ActivityIndicator size={"small"} color="#0D5BC4" className="mt-8"/>
                         ) : (
                             <>
-                                <Button className="bg-emerald-400 mt-10 rounded-lg" onPress={handleSignIn}>
-                                    <ButtonText>Sign In</ButtonText>
+                                <Button className="bg-emerald-400 mt-10 rounded-lg" onPress={handleSignUp}>
+                                    <ButtonText>Create Account</ButtonText>
                                 </Button>
-                                <Button className="border border-green-500 bg-white font-medium mt-5 mb-4 rounded-lg" onPress={() => router.push('/(auth)/createAccount')}>
-                                    <ButtonText className="text-green-500">Create Account</ButtonText>
+                                <Button className="border border-green-500 bg-white font-medium mt-5 mb-4 rounded-lg" onPress={() => router.back()}>
+                                    <ButtonText className="text-green-500">Have an account already?</ButtonText>
                                 </Button> 
                             </>
                         )
                     }
-
-                    {/* <Button className="bg-blue-400 mt-4 rounded-lg" onPress={handleSignIn}>
-                      <AntDesign name="google" size={20} color="#EA4335" style={{ marginRight: 8 }} />
-                    <ButtonText>Sign In with Google</ButtonText>
-                    </Button> */}
             </VStack>
           </KeyboardAvoidingView>
       </SafeAreaView>
