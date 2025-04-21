@@ -13,8 +13,8 @@ export default function CustomHomeHeader(){
     const { customUserData } = useAuthStore();
 
     return (
-    <SafeAreaView className="bg-white">
-        <HStack className="justify-between">
+    <SafeAreaView className="bg-white ">
+        <HStack className="justify-between px-4 pb-2">
             <HStack space="md">
                 <Avatar size="md">
                     <AvatarFallbackText>Img</AvatarFallbackText>

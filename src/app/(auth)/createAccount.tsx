@@ -1,6 +1,6 @@
 import { useRouter } from "expo-router";
 import { useState } from "react";
-import { ActivityIndicator, KeyboardAvoidingView, SafeAreaView } from "react-native";
+import { ActivityIndicator, KeyboardAvoidingView, Platform, SafeAreaView, ScrollView } from "react-native";
 import { Alert, AlertIcon, AlertText } from "../../components/ui/alert";
 import { Button, ButtonText } from "../../components/ui/button";
 import { FormControl, FormControlLabelText } from "../../components/ui/form-control";
@@ -47,105 +47,113 @@ export default function CreateAccount(){
 
     return (
         <SafeAreaView className="flex-1 bg-white">
-          {showError && (
-            <Alert action="warning" variant="solid">
-              <AlertIcon as={InfoIcon}/>
-              <AlertText>{errorMessage}</AlertText>
-            </Alert>
-          )}
-            <KeyboardAvoidingView behavior="padding" >
-                <VStack className="pt-24">
-                    <Heading className="text-3xl text-green-400">Create Account</Heading>
-                    <Text className="text-gray-500 text-base pt-4">Let's get you started with your new account!</Text>
+            {showError && (
+                <Alert action="warning" variant="solid">
+                    <AlertIcon as={InfoIcon}/>
+                    <AlertText>{errorMessage}</AlertText>
+                </Alert>
+            )}
+            <KeyboardAvoidingView 
+                behavior={Platform.OS === "ios" ? "padding" : "height"}
+                className="flex-1"
+            >
+            <ScrollView 
+                contentContainerStyle={{flexGrow: 1}}
+                keyboardShouldPersistTaps="handled"
+            >
+                <VStack className="flex-1 px-4 pt-12 pb-6">
+                <Heading className="text-3xl text-green-400">Create Account</Heading>
+                <Text className="text-gray-500 text-base pt-4">Let's get you started with your new account!</Text>
 
-                    <FormControl>
-                        <FormControlLabelText className="text-xl text-black-900 mt-12 mb-2">
-                            Full Name
-                        </FormControlLabelText>
-                    </FormControl>
-                    <Input>
-                        <InputField
-                            value={fullName}
-                            onChangeText={setFullName}
-                            type="text"
-                            autoCapitalize="none"
-                            autoCorrect={false}
-                            placeholder="Enter your full name"
-                            className="rounded-lg"
-                        />
-                    </Input>
+                <FormControl className="mt-8">
+                    <FormControlLabelText className="text-xl text-black-900 mb-2">
+                        Full Name
+                    </FormControlLabelText>
+                </FormControl>
+                <Input>
+                    <InputField
+                        value={fullName}
+                        onChangeText={setFullName}
+                        type="text"
+                        autoCapitalize="none"
+                        autoCorrect={false}
+                        placeholder="Enter your full name"
+                        className="rounded-lg"
+                    />
+                </Input>
 
-                    <FormControl>
-                        <FormControlLabelText className="text-xl text-black-900 mt-8 mb-2">
-                            User Name
-                        </FormControlLabelText>
-                    </FormControl>
-                    <Input>
-                        <InputField
-                            value={userName}
-                            onChangeText={setUserName}
-                            type="text"
-                            autoCapitalize="none"
-                            autoCorrect={false}
-                            placeholder="Enter your username"
-                            className="rounded-lg"
-                        />
-                    </Input>
+                {/* Other form controls with fixed spacing... */}
+                <FormControl className="mt-6">
+                    <FormControlLabelText className="text-xl text-black-900 mb-2">
+                        User Name
+                    </FormControlLabelText>
+                </FormControl>
+                <Input>
+                    <InputField
+                        value={userName}
+                        onChangeText={setUserName}
+                        type="text"
+                        autoCapitalize="none"
+                        autoCorrect={false}
+                        placeholder="Enter your username"
+                        className="rounded-lg"
+                    />
+                </Input>
 
-                    <FormControl>
-                        <FormControlLabelText className="text-xl text-black-900 mt-8 mb-2">
-                            Email Address
-                        </FormControlLabelText>
-                    </FormControl>
-                    <Input>
-                        <InputField
-                            value={email}
-                            onChangeText={setEmail}
-                            type="text"
-                            keyboardType="email-address"
-                            autoCapitalize="none"
-                            autoCorrect={false}
-                            placeholder="Enter your email"
-                            className="rounded-lg"
-                        />
-                    </Input>
+                <FormControl className="mt-6">
+                    <FormControlLabelText className="text-xl text-black-900 mb-2">
+                        Email Address
+                    </FormControlLabelText>
+                </FormControl>
+                <Input>
+                    <InputField
+                        value={email}
+                        onChangeText={setEmail}
+                        type="text"
+                        keyboardType="email-address"
+                        autoCapitalize="none"
+                        autoCorrect={false}
+                        placeholder="Enter your email"
+                        className="rounded-lg"
+                    />
+                </Input>
 
-                    <FormControl>
-                        <FormControlLabelText className="text-xl text-black-900 mt-8 mb-2">
-                            Password
-                        </FormControlLabelText>
-                    </FormControl>
-                    <Input>
-                        <InputField
-                            value={password}
-                            onChangeText={setPassword}
-                            type={showPassword ? "text" : "password"}
-                            secureTextEntry={!showPassword}
-                            autoCapitalize="none"
-                            autoCorrect={false}
-                            placeholder="Enter password"
-                            placeholderTextColor="#A0AEC0"
-                        />
-                        <InputSlot className="pr-3" onPress={togglePasswordVisibility}>
-                            <InputIcon as={showPassword? EyeIcon : EyeOffIcon}></InputIcon>
-                        </InputSlot>
-                    </Input>
+                <FormControl className="mt-6">
+                    <FormControlLabelText className="text-xl text-black-900 mb-2">
+                        Password
+                    </FormControlLabelText>
+                </FormControl>
+                <Input>
+                    <InputField
+                        value={password}
+                        onChangeText={setPassword}
+                        type={showPassword ? "text" : "password"}
+                        secureTextEntry={!showPassword}
+                        autoCapitalize="none"
+                        autoCorrect={false}
+                        placeholder="Enter password"
+                        placeholderTextColor="#A0AEC0"
+                    />
+                    <InputSlot className="pr-3" onPress={togglePasswordVisibility}>
+                        <InputIcon as={showPassword? EyeIcon : EyeOffIcon}></InputIcon>
+                    </InputSlot>
+                </Input>
 
-                    {loading ? (
-                        <ActivityIndicator size={"small"} color="#0D5BC4" className="mt-8"/>
-                        ) : (
-                            <>
-                                <Button className="bg-emerald-400 mt-10 rounded-lg" onPress={handleSignUp}>
-                                    <ButtonText>Create Account</ButtonText>
-                                </Button>
-                                <Button className="border border-green-500 bg-white font-medium mt-5 mb-4 rounded-lg" onPress={() => router.back()}>
-                                    <ButtonText className="text-green-500">Have an account already?</ButtonText>
-                                </Button> 
-                            </>
-                        )
-                    }
-            </VStack>
-          </KeyboardAvoidingView>
-      </SafeAreaView>
+                {loading ? (
+                    <ActivityIndicator size={"small"} color="#0D5BC4" className="mt-8"/>
+                ) : (
+                    <>
+                        <Button className="bg-emerald-400 mt-10 rounded-lg" onPress={handleSignUp}>
+                            <ButtonText>Create Account</ButtonText>
+                        </Button>
+                        <Button className="border border-green-500 bg-white font-medium mt-5 mb-4 rounded-lg" onPress={() => router.back()}>
+                            <ButtonText className="text-green-500">Have an account already?</ButtonText>
+                        </Button> 
+                    </>
+                )}
+                </VStack>
+            </ScrollView>
+            </KeyboardAvoidingView>
+        </SafeAreaView>
     )
 }

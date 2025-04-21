@@ -3,6 +3,7 @@ import { loginUser, registerUser } from "../services/authService";
 import { createUserAccount, getUserData } from "../services/userService";
 import { useAuthStore } from "../store/authStore";
 import { auth } from "../utils/firebaseConfig";
+import { onAuthStateChanged } from "firebase/auth";
 
 export const useAuthController = () => {
     // const setUser = useAuthStore((state) => state.setUser)
@@ -73,5 +74,35 @@ export const useAuthController = () => {
         }
     }
 
-    return {signUp, signIn};
+    // to load user data on app initialization
+    const initializeAuth = () => {
+
+        return onAuthStateChanged(auth, async (user)=> {
+            if(user){
+                if(user?.emailVerified){
+
+                    // if user is signed in, fetch user data from firestore
+                    const userData = await getUserData(user.uid);
+    
+                    useAuthStore.getState().setUser(
+                        user, 
+                        {
+                            fullName: userData?.fullName,
+                            userName: userData?.userName,
+                        }   
+                    );
+                }else{
+                    // handle unverified email
+                    auth.signOut();
+                    useAuthStore.getState().clearUser();
+                }
+            }else{
+                // user is signed out
+                useAuthStore.getState().clearUser();
+            }
+
+        })
+    }
+
+    return {signUp, signIn, initializeAuth};
 }
