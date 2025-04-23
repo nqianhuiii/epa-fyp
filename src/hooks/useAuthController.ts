@@ -1,12 +1,11 @@
 import { FirebaseError } from "firebase/app";
+import { onAuthStateChanged } from "firebase/auth";
 import { loginUser, registerUser } from "../services/authService";
-import { createUserAccount, getUserData } from "../services/userService";
+import { createUserAccount, getUserData, updateUserAccount } from "../services/userService";
 import { useAuthStore } from "../store/authStore";
 import { auth } from "../utils/firebaseConfig";
-import { onAuthStateChanged } from "firebase/auth";
 
 export const useAuthController = () => {
-    // const setUser = useAuthStore((state) => state.setUser)
 
     const signUp = async (email: string, password: string, fullName: string, userName: string, onError: (msg:string) => void) => {
         try{
@@ -42,7 +41,6 @@ export const useAuthController = () => {
                 return;
             }
 
-            // fetch user data from firestore
             const userData = await getUserData(userCredential.user.uid);
 
             // update zustand store
@@ -81,7 +79,6 @@ export const useAuthController = () => {
             if(user){
                 if(user?.emailVerified){
 
-                    // if user is signed in, fetch user data from firestore
                     const userData = await getUserData(user.uid);
     
                     useAuthStore.getState().setUser(
@@ -100,9 +97,30 @@ export const useAuthController = () => {
                 // user is signed out
                 useAuthStore.getState().clearUser();
             }
-
         })
     }
 
-    return {signUp, signIn, initializeAuth};
+    const updateProfile = async(userId: string, profileData: {fullName: string, userName: string}) => {
+        try{
+            // update profile in firestore
+            await updateUserAccount(userId, profileData);
+
+            // update zustand store
+            const user = useAuthStore.getState().user;
+            if(user){
+                useAuthStore.getState().setUser(
+                    user, 
+                    {
+                        fullName: profileData.fullName,
+                        userName: profileData.userName,
+                    }   
+                );
+            }
+        }catch(e:any){
+            // need proper error message display 
+            console.log(e);
+        }
+    }
+
+    return {signUp, signIn, initializeAuth, updateProfile};
 }

@@ -1,19 +1,19 @@
-import { Stack } from "expo-router";
+import { router, Stack } from "expo-router";
 import { SafeAreaView, View } from "react-native";
-import { Avatar, AvatarFallbackText, AvatarImage } from "../../components/ui/avatar";
-import { Button, ButtonText } from "../../components/ui/button";
-import { Heading } from "../../components/ui/heading";
-import { HStack } from "../../components/ui/hstack";
-import { VStack } from "../../components/ui/vstack";
-import { useAuthStore } from "../../store/authStore";
-import { auth } from "../../utils/firebaseConfig";
+import { Avatar, AvatarFallbackText, AvatarImage } from "../../../components/ui/avatar";
+import { Button, ButtonText } from "../../../components/ui/button";
+import { Heading } from "../../../components/ui/heading";
+import { HStack } from "../../../components/ui/hstack";
+import { VStack } from "../../../components/ui/vstack";
+import { useAuthStore } from "../../../store/authStore";
+import { auth } from "../../../utils/firebaseConfig";
 
-export default function Home(){
+export default function Profile(){
     const { customUserData } = useAuthStore();
   
     return (
       <SafeAreaView className="flex-1 bg-white">
-        <Stack.Screen options={{ headerShown: true, headerTitle: "Account"}}/>
+        <Stack.Screen options={{ headerShown: true, headerTitle: "Profile"}}/>
         <View className="flex-1 px-4">
             <HStack className="justify-between px-4 py-4">
                 <HStack space="md">
@@ -28,7 +28,7 @@ export default function Home(){
                     <VStack space="sm">
                         {/* <Heading size="sm">{customUserData?.userName}</Heading> */}
                         <Heading size="sm">{customUserData?.userName}</Heading>
-                        <Button className="border border-blue-400 bg-white mt-10 rounded-lg" onPress={() => auth.signOut()}>
+                        <Button className="border border-blue-400 bg-white mt-10 rounded-lg" onPress={() => router.push('/(tabs)/profile/editProfile')}>
                           <ButtonText className="text-blue-400">Edit</ButtonText>
                         </Button>                
                   </VStack>           

@@ -56,7 +56,7 @@ export default function CreateAccount(){
             <KeyboardAvoidingView 
                 behavior={Platform.OS === "ios" ? "padding" : "height"}
                 className="flex-1"
-            >
+>
             <ScrollView 
                 contentContainerStyle={{flexGrow: 1}}
                 keyboardShouldPersistTaps="handled"
@@ -82,7 +82,6 @@ export default function CreateAccount(){
                     />
                 </Input>
 
-                {/* Other form controls with fixed spacing... */}
                 <FormControl className="mt-6">
                     <FormControlLabelText className="text-xl text-black-900 mb-2">
                         User Name

@@ -1,4 +1,4 @@
-import { setDoc, doc, getDoc } from "firebase/firestore";
+import { setDoc, doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "../utils/firebaseConfig";
 
 export const createUserAccount = async (
@@ -20,3 +20,16 @@ export const getUserData = async (userId: string) => {
     const userDoc = await getDoc(doc(db, "users", userId));
     return userDoc.exists() ? userDoc.data() : null;
 }
+
+export const updateUserAccount = async(
+    userId:string,
+    userData: {
+        fullName: string;
+        userName: string;
+    }
+ ) => {
+    await updateDoc(doc(db, "users", userId), {
+        ...userData,
+        updatedAt: new Date(),
+    })
+ }

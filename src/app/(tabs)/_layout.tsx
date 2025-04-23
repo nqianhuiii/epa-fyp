@@ -10,7 +10,7 @@ export default function _layout (){
             <Tabs.Screen 
                 name="index" 
                 options={{
-                    // title:'Home', 
+                    title:'Home', 
                     header: () => <CustomHomeHeader/>,
                     tabBarIcon: ({color}) => <FontAwesome size={28} name="home" color={color}/>
                 }}
@@ -31,9 +31,9 @@ export default function _layout (){
                 }}
             />
             <Tabs.Screen
-                name="account"
+                name="profile"
                 options={{
-                    title:'Account', 
+                    title: 'Profile', 
                     headerShown: false,
                     tabBarIcon: ({color}) => <FontAwesome size={28} name="user" color={color}/>
                 }}
