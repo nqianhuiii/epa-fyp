@@ -5,8 +5,8 @@ import { Button, ButtonText } from "../../../components/ui/button";
 import { Heading } from "../../../components/ui/heading";
 import { HStack } from "../../../components/ui/hstack";
 import { VStack } from "../../../components/ui/vstack";
+import { auth } from "../../../config/firebaseConfig";
 import { useAuthStore } from "../../../store/authStore";
-import { auth } from "../../../utils/firebaseConfig";
 
 export default function Profile(){
     const { customUserData } = useAuthStore();

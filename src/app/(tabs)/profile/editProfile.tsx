@@ -4,21 +4,25 @@ import { ActivityIndicator, KeyboardAvoidingView, Platform, SafeAreaView, Scroll
 import { useAlert } from "../../../components/custom/alertProvider";
 import BackButton from "../../../components/custom/customBackButton";
 import { Button, ButtonText } from "../../../components/ui/button";
-import { FormControl, FormControlLabelText } from "../../../components/ui/form-control";
+import { FormControl, FormControlHelperText, FormControlLabelText } from "../../../components/ui/form-control";
 import { Input, InputField } from "../../../components/ui/input";
 import { VStack } from "../../../components/ui/vstack";
 import { useAuthController } from "../../../hooks/useAuthController";
 import { useAuthStore } from "../../../store/authStore";
+import { validateUserProfileForm } from "../../../utils/formValidation";
 
 export default function EditProfile() {
     const [fullName, setFullName] = useState('');
     const [userName, setUserName] = useState('');
-    const [email, setEmail] = useState('');
+    // const [email, setEmail] = useState('');
     const [loading, setLoading] = useState(false);
+    const [fullNameError, setFullNameError] = useState('');
+    const [userNameError, setUserNameError] = useState('');
     const { customUserData, user } = useAuthStore();
     const { updateProfile } = useAuthController();
     const { showAlert } = useAlert();
 
+    // set the initial form fields with the user data 
     useEffect(() => {
         if(customUserData){
             setFullName(customUserData.fullName || '');
@@ -26,7 +30,16 @@ export default function EditProfile() {
         }
     }, [customUserData]);
     
+    const validateForm = () => {
+        const { isValid, errors } = validateUserProfileForm(fullName, userName);
+        setFullNameError(errors.fullNameError);
+        setUserNameError(errors.userNameError);
+        return isValid;
+    }
+
     const handleUpdateProfile = async() => {
+        if(!validateForm()) return;
+
         if(!user){
             showAlert("User not found", "error");
             return;
@@ -63,25 +76,34 @@ export default function EditProfile() {
                     <FormControlLabelText className="text-xl text-black-900 mb-2">
                         Full Name
                     </FormControlLabelText>
+                    <Input className="border-0 shadow-none p-0">
+                        <InputField
+                            value={fullName}
+                            onChangeText={setFullName}
+                            type="text"
+                            autoCapitalize="none"
+                            autoCorrect={false}
+                            placeholder="Enter your full name"
+                            className={`rounded-lg border px-3 py-2  ${
+                                fullNameError 
+                                  ? 'border-red-500 focus:border-red-500' 
+                                  : 'border-gray-300 focus:border-gray-300'
+                              }`}
+                        />
+                    </Input>
+                    {fullNameError ? (
+                        <FormControlHelperText className="text-red-500 mt-1">
+                            {fullNameError}
+                        </FormControlHelperText>
+                    ) : null}
                 </FormControl>
-                <Input>
-                    <InputField
-                        value={fullName}
-                        onChangeText={setFullName}
-                        type="text"
-                        autoCapitalize="none"
-                        autoCorrect={false}
-                        placeholder="Enter your full name"
-                        className="rounded-lg"
-                    />
-                </Input>
 
                 <FormControl className="mt-6">
                     <FormControlLabelText className="text-xl text-black-900 mb-2">
                         User Name
                     </FormControlLabelText>
                 </FormControl>
-                <Input>
+                <Input className="border-0 shadow-none p-0">
                     <InputField
                         value={userName}
                         onChangeText={setUserName}
@@ -89,7 +111,11 @@ export default function EditProfile() {
                         autoCapitalize="none"
                         autoCorrect={false}
                         placeholder="Enter your username"
-                        className="rounded-lg"
+                        className={`rounded-lg border px-3 py-2  ${
+                            userNameError
+                              ? 'border-red-500 focus:border-red-500' 
+                              : 'border-gray-300 focus:border-gray-300'
+                          }`}
                     />
                 </Input>
 

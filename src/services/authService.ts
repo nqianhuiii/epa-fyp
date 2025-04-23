@@ -1,6 +1,5 @@
 import { createUserWithEmailAndPassword, sendEmailVerification, signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../utils/firebaseConfig";
-import { GoogleSignin, statusCodes } from '@react-native-google-signin/google-signin';
+import { auth } from "../config/firebaseConfig";
   
 export const registerUser = async(email: string, password: string) => {
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);

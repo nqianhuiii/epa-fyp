@@ -1,5 +1,5 @@
-import { setDoc, doc, getDoc, updateDoc } from "firebase/firestore";
-import { db } from "../utils/firebaseConfig";
+import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
+import { db } from "../config/firebaseConfig";
 
 export const createUserAccount = async (
     userId: string, 

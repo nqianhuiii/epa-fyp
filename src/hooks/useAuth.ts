@@ -1,8 +1,8 @@
-import { useEffect, useState } from "react";
-import { onAuthStateChanged } from "firebase/auth";
-import { useAuthStore } from "../store/authStore";
-import { auth } from "../utils/firebaseConfig";
 import { router } from "expo-router";
+import { onAuthStateChanged } from "firebase/auth";
+import { useEffect, useState } from "react";
+import { auth } from "../config/firebaseConfig";
+import { useAuthStore } from "../store/authStore";
 
 export const useAuth = () => {
     const setUser = useAuthStore((state) => state.setUser)

@@ -1,9 +1,9 @@
 import { FirebaseError } from "firebase/app";
 import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "../config/firebaseConfig";
 import { loginUser, registerUser } from "../services/authService";
 import { createUserAccount, getUserData, updateUserAccount } from "../services/userService";
 import { useAuthStore } from "../store/authStore";
-import { auth } from "../utils/firebaseConfig";
 
 export const useAuthController = () => {
 
