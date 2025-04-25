@@ -61,8 +61,8 @@ export default function CreateAccount(){
                 contentContainerStyle={{flexGrow: 1}}
                 keyboardShouldPersistTaps="handled"
             >
-                <VStack className="flex-1 px-4 pt-12 pb-6">
-                <Heading className="text-3xl text-green-400">Create Account</Heading>
+                <VStack className="flex-1 px-5 pt-12 pb-6">
+                <Heading className="text-3xl text-emerald-400">Create Account</Heading>
                 <Text className="text-gray-500 text-base pt-4">Let's get you started with your new account!</Text>
 
                 <FormControl className="mt-8">
@@ -70,7 +70,7 @@ export default function CreateAccount(){
                         Full Name
                     </FormControlLabelText>
                 </FormControl>
-                <Input>
+                <Input className="rounded-xl h-11 bg-gray-100 border-0">
                     <InputField
                         value={fullName}
                         onChangeText={setFullName}
@@ -78,7 +78,6 @@ export default function CreateAccount(){
                         autoCapitalize="none"
                         autoCorrect={false}
                         placeholder="Enter your full name"
-                        className="rounded-lg"
                     />
                 </Input>
 
@@ -87,7 +86,7 @@ export default function CreateAccount(){
                         User Name
                     </FormControlLabelText>
                 </FormControl>
-                <Input>
+                <Input className="rounded-xl h-11 bg-gray-100 border-0">
                     <InputField
                         value={userName}
                         onChangeText={setUserName}
@@ -95,7 +94,6 @@ export default function CreateAccount(){
                         autoCapitalize="none"
                         autoCorrect={false}
                         placeholder="Enter your username"
-                        className="rounded-lg"
                     />
                 </Input>
 
@@ -104,7 +102,7 @@ export default function CreateAccount(){
                         Email Address
                     </FormControlLabelText>
                 </FormControl>
-                <Input>
+                <Input className="rounded-xl h-11 bg-gray-100 border-0">
                     <InputField
                         value={email}
                         onChangeText={setEmail}
@@ -113,7 +111,6 @@ export default function CreateAccount(){
                         autoCapitalize="none"
                         autoCorrect={false}
                         placeholder="Enter your email"
-                        className="rounded-lg"
                     />
                 </Input>
 
@@ -122,7 +119,7 @@ export default function CreateAccount(){
                         Password
                     </FormControlLabelText>
                 </FormControl>
-                <Input>
+                <Input className="rounded-xl h-11 bg-gray-100 border-0">
                     <InputField
                         value={password}
                         onChangeText={setPassword}
@@ -131,7 +128,6 @@ export default function CreateAccount(){
                         autoCapitalize="none"
                         autoCorrect={false}
                         placeholder="Enter password"
-                        placeholderTextColor="#A0AEC0"
                     />
                     <InputSlot className="pr-3" onPress={togglePasswordVisibility}>
                         <InputIcon as={showPassword? EyeIcon : EyeOffIcon}></InputIcon>
@@ -142,11 +138,11 @@ export default function CreateAccount(){
                     <ActivityIndicator size={"small"} color="#0D5BC4" className="mt-8"/>
                 ) : (
                     <>
-                        <Button className="bg-emerald-400 mt-10 rounded-lg" onPress={handleSignUp}>
+                        <Button className="bg-emerald-400 mt-10 rounded-xl h-11" onPress={handleSignUp}>
                             <ButtonText>Create Account</ButtonText>
                         </Button>
-                        <Button className="border border-green-500 bg-white font-medium mt-5 mb-4 rounded-lg" onPress={() => router.back()}>
-                            <ButtonText className="text-green-500">Have an account already?</ButtonText>
+                        <Button className="border border-emerald-400 bg-white font-medium mt-5 mb-4 rounded-xl h-11" onPress={() => router.back()}>
+                            <ButtonText className="text-emerald-400">Have an account already?</ButtonText>
                         </Button> 
                     </>
                 )}
