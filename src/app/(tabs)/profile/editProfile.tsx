@@ -61,6 +61,7 @@ export default function EditProfile() {
             <Stack.Screen options={{ 
                 headerShown: true, 
                 headerTitle: "Edit Profile", 
+                headerShadowVisible: false,
                 headerBackTitle: '',
                 headerLeft: () => BackButton()}}/>
             <KeyboardAvoidingView 
@@ -71,12 +72,12 @@ export default function EditProfile() {
                 contentContainerStyle={{flexGrow: 1}}
                 keyboardShouldPersistTaps="handled"
             >
-                <VStack className="flex-1 px-4 pb-6">
+                <VStack className="flex-1 px-5 pb-6">
                 <FormControl className="mt-8">
                     <FormControlLabelText className="text-xl text-black-900 mb-2">
                         Full Name
                     </FormControlLabelText>
-                    <Input className="border-0 shadow-none p-0">
+                    <Input className="h-11 rounded-xl border-0 shadow-none p-0">
                         <InputField
                             value={fullName}
                             onChangeText={setFullName}
@@ -84,7 +85,7 @@ export default function EditProfile() {
                             autoCapitalize="none"
                             autoCorrect={false}
                             placeholder="Enter your full name"
-                            className={`rounded-lg border px-3 py-2  ${
+                            className={`rounded-xl border px-3 py-2  ${
                                 fullNameError 
                                   ? 'border-red-500 focus:border-red-500' 
                                   : 'border-gray-300 focus:border-gray-300'
@@ -102,22 +103,27 @@ export default function EditProfile() {
                     <FormControlLabelText className="text-xl text-black-900 mb-2">
                         User Name
                     </FormControlLabelText>
+                    <Input className="h-11 rounded-xl border-0 shadow-none p-0">
+                        <InputField
+                            value={userName}
+                            onChangeText={setUserName}
+                            type="text"
+                            autoCapitalize="none"
+                            autoCorrect={false}
+                            placeholder="Enter your username"
+                            className={`rounded-xl border px-3 py-2  ${
+                                userNameError
+                                ? 'border-red-500 focus:border-red-500' 
+                                : 'border-gray-300 focus:border-gray-300'
+                            }`}
+                        />
+                    </Input>
+                    {userNameError ? (
+                        <FormControlHelperText className="text-red-500 mt-1">
+                            {userNameError}
+                        </FormControlHelperText>
+                    ) : null}                    
                 </FormControl>
-                <Input className="border-0 shadow-none p-0">
-                    <InputField
-                        value={userName}
-                        onChangeText={setUserName}
-                        type="text"
-                        autoCapitalize="none"
-                        autoCorrect={false}
-                        placeholder="Enter your username"
-                        className={`rounded-lg border px-3 py-2  ${
-                            userNameError
-                              ? 'border-red-500 focus:border-red-500' 
-                              : 'border-gray-300 focus:border-gray-300'
-                          }`}
-                    />
-                </Input>
 
                 {/* <FormControl className="mt-6">
                     <FormControlLabelText className="text-xl text-black-900 mb-2">

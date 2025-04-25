@@ -45,7 +45,7 @@ export default function SignIn(){
     const router = useRouter();
 
     return (
-        <SafeAreaView className="flex-1 bg-white px-4">
+        <SafeAreaView className="flex-1 bg-white px-5">
             {showError && (
             <Alert action="warning" variant="solid">
                 <AlertIcon as={InfoIcon}/>
@@ -56,8 +56,8 @@ export default function SignIn(){
                 behavior={Platform.OS === "ios" ? "padding" : "height"}
                 className="flex-1"                 
             >
-            <VStack className="pt-24 px-4">
-              <Heading className="text-3xl text-green-400">Login</Heading>
+            <VStack className="pt-24 px-5">
+              <Heading className="text-3xl text-emerald-400">Login</Heading>
               <Text className="text-gray-500 text-base pt-4">Welcome back to the app</Text>
 
               <FormControl className="mt-8">
@@ -65,7 +65,7 @@ export default function SignIn(){
                   Email Address
                 </FormControlLabelText>
               </FormControl>
-              <Input>
+              <Input className="rounded-xl h-11 bg-gray-100 border-0">
                 <InputField
                   value={email}
                   onChangeText={setEmail}
@@ -73,8 +73,7 @@ export default function SignIn(){
                   keyboardType="email-address"
                   autoCapitalize="none"
                   autoCorrect={false}
-                  placeholder="Enter your email"
-                  className="rounded-lg"
+                  placeholder="Enter your email"              
                 />
               </Input>
 
@@ -83,7 +82,7 @@ export default function SignIn(){
                   Password
                 </FormControlLabelText>
               </FormControl>
-              <Input>
+              <Input className="rounded-xl h-11 bg-gray-100 border-0">
                 <InputField
                   value={password}
                   onChangeText={setPassword}
@@ -92,7 +91,6 @@ export default function SignIn(){
                   autoCapitalize="none"
                   autoCorrect={false}
                   placeholder="Enter password"
-                  placeholderTextColor="#A0AEC0"
                 />
                 <InputSlot className="pr-3" onPress={togglePasswordVisibility}>
                   <InputIcon as={showPassword? EyeIcon : EyeOffIcon}></InputIcon>
@@ -103,11 +101,11 @@ export default function SignIn(){
                 <ActivityIndicator size={"small"} color="#0D5BC4" className="mt-8"/>
               ) : (
                 <>
-                  <Button className="bg-emerald-400 mt-8 rounded-lg" onPress={handleSignIn}>
+                  <Button className="bg-emerald-400 mt-8 rounded-xl h-11" onPress={handleSignIn}>
                     <ButtonText>Sign In</ButtonText>
                   </Button>
-                  <Button className="border border-green-500 bg-white font-medium mt-5 mb-4 rounded-lg" onPress={() => router.push('/(auth)/createAccount')}>
-                    <ButtonText className="text-green-500">Create Account</ButtonText>
+                  <Button className="border border-emerald-400 bg-white font-medium mt-5 mb-4 rounded-xl h-11" onPress={() => router.push('/(auth)/createAccount')}>
+                    <ButtonText className="text-emerald-400">Create Account</ButtonText>
                   </Button> 
                 </>
               )}

@@ -6,7 +6,18 @@ import CustomHomeHeader from '../../components/custom/customHomeHeader';
 export default function _layout (){
   return (
     // <SafeAreaView className="flex-1">
-        <Tabs screenOptions={{ tabBarActiveTintColor: '#0D5BC4'}}>
+        <Tabs screenOptions={{ 
+            tabBarActiveTintColor: '#34d399', 
+            tabBarInactiveTintColor: '#d1d5db',
+            tabBarStyle: {
+                backgroundColor: '#ffffff', // Tab bar background color (white)
+                borderTopWidth: 0,  // Remove the top border
+                shadowOpacity: 0.05,   // Remove the shadow (on iOS devices)
+                borderTopLeftRadius: 12,  // Round the top-left corner
+                borderTopRightRadius: 12, // Round the top-right corner
+                elevation: 0,  // Optional: Set elevation to 0 to remove shadow on Android
+              },
+        }}>
             <Tabs.Screen 
                 name="index" 
                 options={{
