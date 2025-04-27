@@ -38,6 +38,7 @@ export default function _layout (){
                 name="forum"
                 options={{
                     title:'Forum', 
+                    headerShown: false,
                     tabBarIcon: ({color}) => <FontAwesome size={28} name="comments" color={color}/>
                 }}
             />

@@ -4,7 +4,7 @@ import { AlertProvider } from "../../../components/custom/alertProvider";
 export default function ProfileLayout() {
   return (
     <AlertProvider>
-        <Stack/>
+        <Stack screenOptions={{ headerShadowVisible: false }}/>
     </AlertProvider>
   );
 }

@@ -16,15 +16,20 @@
   "dependencies": {
     "@expo/html-elements": "^0.4.2",
     "@expo/vector-icons": "^14.0.2",
+    "@gluestack-ui/alert": "^0.1.16",
     "@gluestack-ui/avatar": "^0.1.18",
+    "@gluestack-ui/button": "^1.0.14",
     "@gluestack-ui/icon": "^0.1.26",
+    "@gluestack-ui/input": "^0.1.38",
     "@gluestack-ui/nativewind-utils": "^1.0.26",
     "@gluestack-ui/overlay": "^0.1.22",
+    "@gluestack-ui/textarea": "^0.1.25",
     "@gluestack-ui/toast": "^1.0.9",
     "@react-native-firebase/app": "^21.13.0",
     "@react-native-firebase/auth": "^21.13.0",
     "@react-navigation/native": "^7.0.14",
     "expo": "~52.0.40",
+    "expo-build-properties": "~0.13.2",
     "expo-constants": "~17.0.8",
     "expo-font": "~13.0.4",
     "expo-linking": "~7.0.5",
@@ -45,8 +50,7 @@
     "react-native-screens": "~4.4.0",
     "react-native-svg": "^15.2.0",
     "react-native-web": "~0.19.13",
-    "tailwindcss": "^3.4.17",
-    "expo-build-properties": "~0.13.2"
+    "tailwindcss": "^3.4.17"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",

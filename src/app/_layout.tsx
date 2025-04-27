@@ -1,14 +1,25 @@
 import "@/global.css";
-import { Stack } from "expo-router";
+import { Stack, router } from "expo-router";
 import { ActivityIndicator, View } from "react-native";
 import { GluestackUIProvider } from "../components/ui/gluestack-ui-provider";
 import { useAuth } from "../hooks/useAuth";
+import { useAuthStore } from "../store/authStore";
+import { useEffect } from "react";
 
-export default function Layout(){
-
+export default function Layout() {
   const initializing = useAuth();
+  const user = useAuthStore((state) => state.user);
 
-  if(initializing){
+  // Handle navigation after the layout is mounted
+  useEffect(() => {
+    if (!initializing) {
+      // Only navigate when authentication state is determined
+      const path = user ? '/(tabs)' : '/(auth)/signin';
+      router.replace(path);
+    }
+  }, [initializing, user]);
+
+  if (initializing) {
     return (
       <View className="flex-1 items-center justify-center">
         <ActivityIndicator size="small"/>
@@ -18,7 +29,7 @@ export default function Layout(){
 
   return (
     <GluestackUIProvider mode="light">
-      <View className= "flex-1 bg-white">
+      <View className="flex-1 bg-white">
         <Stack screenOptions={{ headerShown: false }}/>
       </View>
     </GluestackUIProvider>
