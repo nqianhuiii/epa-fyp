@@ -1,4 +1,4 @@
-import { validateFullName, validateUsername } from "./regexValidation";
+import { validateFullName, validateUsername, validateTitle, validateDescription } from "./regexValidation";
 
 export const validateUserProfileForm = (fullName: string, userName: string) => {
 
@@ -20,6 +20,31 @@ export const validateUserProfileForm = (fullName: string, userName: string) => {
         isValid = false;
     }else{
         errors.userNameError = "";
+    }
+
+    return {isValid, errors};
+}
+
+export const validateForumForm = (title: string, description: string) => {
+
+    let isValid = true;
+    let errors = {
+        title: "",
+        description: "",
+    }
+
+    if(!validateTitle(title)){
+        errors.title = "Title is required.";
+        isValid = false;
+    }else{
+        errors.title = "";
+    }
+
+    if(!validateDescription(description)){
+        errors.description = "Description is required)";
+        isValid = false;
+    }else{
+        errors.description = "";
     }
 
     return {isValid, errors};

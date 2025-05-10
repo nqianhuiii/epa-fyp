@@ -9,7 +9,7 @@ interface CustomInputWithErrorMsgProps {
     keyboardType? : "default" | "email-address" | "numeric" | "phone-pad";
     autoCapitalize? : "none" | "sentences" | "words" | "characters";
     secureTextEntry?: boolean;
-    error: string;
+    error?: string;
 }
 
 const CustomInputWithErrorMsg: React.FC<CustomInputWithErrorMsgProps> =({

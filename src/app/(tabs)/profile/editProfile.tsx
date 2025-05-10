@@ -4,8 +4,6 @@ import { ActivityIndicator, KeyboardAvoidingView, Platform, SafeAreaView, Scroll
 import { useAlert } from "../../../components/custom/alertProvider";
 import BackButton from "../../../components/custom/customBackButton";
 import { Button, ButtonText } from "../../../components/ui/button";
-import { FormControl, FormControlHelperText, FormControlLabelText } from "../../../components/ui/form-control";
-import { Input, InputField } from "../../../components/ui/input";
 import { VStack } from "../../../components/ui/vstack";
 import { useAuthController } from "../../../hooks/useAuthController";
 import { useAuthStore } from "../../../store/authStore";

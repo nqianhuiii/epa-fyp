@@ -10,6 +10,7 @@ import { Input, InputField, InputIcon, InputSlot } from "../../components/ui/inp
 import { Text } from "../../components/ui/text";
 import { VStack } from "../../components/ui/vstack";
 import { useAuthController } from "../../hooks/useAuthController";
+import CustomInputWithErrorMsg from "../../components/custom/customInputWithErrorMsg";
 
 export default function CreateAccount(){
     const [fullName, setFullName] = useState('');
@@ -18,6 +19,8 @@ export default function CreateAccount(){
     const [password, setPassword]  = useState('');
     const [showPassword, setShowPassword] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [fullNameError, setFullNameError] = useState('');
+
     const [errorMessage, setErrorMessage] = useState('');
     const [showError, setShowError] = useState(false);
     const {signUp} = useAuthController();
@@ -56,7 +59,7 @@ export default function CreateAccount(){
             <KeyboardAvoidingView 
                 behavior={Platform.OS === "ios" ? "padding" : "height"}
                 className="flex-1"
->
+            >
             <ScrollView 
                 contentContainerStyle={{flexGrow: 1}}
                 keyboardShouldPersistTaps="handled"
@@ -65,21 +68,13 @@ export default function CreateAccount(){
                 <Heading className="text-3xl text-emerald-400">Create Account</Heading>
                 <Text className="text-gray-500 text-base pt-4">Let's get you started with your new account!</Text>
 
-                <FormControl className="mt-8">
-                    <FormControlLabelText className="text-xl text-black-900 mb-2">
-                        Full Name
-                    </FormControlLabelText>
-                </FormControl>
-                <Input className="rounded-xl h-11 bg-gray-100 border-0">
-                    <InputField
+                <CustomInputWithErrorMsg
+                        label="Full Name"
                         value={fullName}
-                        onChangeText={setFullName}
-                        type="text"
-                        autoCapitalize="none"
-                        autoCorrect={false}
                         placeholder="Enter your full name"
-                    />
-                </Input>
+                        onChangeText={setFullName}
+                        error={fullNameError}
+                />
 
                 <FormControl className="mt-6">
                     <FormControlLabelText className="text-xl text-black-900 mb-2">
