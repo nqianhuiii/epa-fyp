@@ -50,13 +50,6 @@ export default function CreateForum() {
         }
     }
 
-    // const validateForm = () => {
-    //     const { isValid, errors } = validateForumForm(title, description);
-    //     setTitleError(errors.titleError);
-    //     setDescriptionError(errors.descriptionError);
-    //     return isValid;
-    // }
-
     const handleSubmit = async () => {
         // Validate inputs first
         const {isValid, errors} = validateForumForm(formState.title, formState.description);

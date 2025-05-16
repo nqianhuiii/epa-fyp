@@ -78,6 +78,7 @@ export default function EditProfile() {
                         placeholder="Enter your full name"
                         onChangeText={setFullName}
                         error={fullNameError}
+                        required={true}
                     />
                     <CustomInputWithErrorMsg
                         label="Username"

@@ -33,3 +33,17 @@ export const updateUserAccount = async(
         updatedAt: new Date(),
     })
  }
+
+ export const getUsernameById = async (userId: string): Promise<string> => {
+    try{
+        const userDoc = await getDoc(doc(db, "users", userId));
+        if(userDoc.exists()){
+            return userDoc.data()?.userName || "";
+        }else{
+            return "Unknown User";
+        }
+    }catch(error){
+        console.error("Error fetching username:", error);
+        return "Unknown User";
+    }   
+ }

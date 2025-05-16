@@ -1,5 +1,6 @@
 import { FormControl, FormControlHelperText, FormControlLabelText } from "../ui/form-control";
 import { Input, InputField } from "../ui/input";
+import { Text } from "../ui/text";
 
 interface CustomInputWithErrorMsgProps {
     label: string;
@@ -10,6 +11,7 @@ interface CustomInputWithErrorMsgProps {
     autoCapitalize? : "none" | "sentences" | "words" | "characters";
     secureTextEntry?: boolean;
     error?: string;
+    required?: boolean;
 }
 
 const CustomInputWithErrorMsg: React.FC<CustomInputWithErrorMsgProps> =({
@@ -21,11 +23,13 @@ const CustomInputWithErrorMsg: React.FC<CustomInputWithErrorMsgProps> =({
     autoCapitalize = "none",
     secureTextEntry = false,
     error,
+    required = false,
 }) => {
     return(
         <FormControl className="mt-6">
-            <FormControlLabelText className="text-xl text-black-900 mb-2">
+            <FormControlLabelText className="text-xl text-black-900 mb-2 flex-row">
                 {label}
+                {required && <Text className= "text-red-500"> *</Text>}
             </FormControlLabelText>
             <Input className="h-11 rounded-xl border-0 bg-gray-100 shadow-none p-0">
                 <InputField
