@@ -93,7 +93,9 @@ export default function SignIn(){
                   placeholder="Enter password"
                 />
                 <InputSlot className="pr-3" onPress={togglePasswordVisibility}>
-                  <InputIcon as={showPassword? EyeIcon : EyeOffIcon}></InputIcon>
+                  <InputIcon>
+                    {showPassword ? <EyeIcon/> : <EyeOffIcon/>}
+                  </InputIcon>
                 </InputSlot>
               </Input>
 

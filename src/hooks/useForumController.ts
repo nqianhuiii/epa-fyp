@@ -1,7 +1,7 @@
 // import { uploadImage, createPostDocument } from "../services/forumService";
 import { useState } from "react";
 import { ForumComment, useForumStore } from "../store/forumStore";
-import { createPostDocument, uploadToCloudinary, fetchAllPosts, fetchPostsByUserId, addComment, getCommentsByPostId, getPostById } from "../services/forumService";
+import { createPostDocument, uploadToCloudinary, fetchAllPosts, fetchPostsByUserId, addCommentToPost, getCommentsByPostId, getPostById } from "../services/forumService";
 
 interface Post {
   id: string;
@@ -119,9 +119,20 @@ export const useForumController = () => {
         );
       };
 
+      const getCommentsByPostId = async (postId: string): Promise<ForumComment[]> => {
+        try {
+          // Implementation to get comments for a specific post
+          // For now, we'll return a mock response
+          return []; // Replace with actual implementation
+        } catch (error) {
+          console.error(`Error getting comments for post ${postId}:`, error);
+          throw error;
+        }
+      };
+
 
 
      
      
-      return {createPost, getAllPosts, getPostsByUserId, handleAddComment, handleToggleLike, addComment, getCommentsByPostId, getPostById };
+      return {createPost, getAllPosts, getPostsByUserId, handleAddComment, handleToggleLike, addCommentToPost, getCommentsByPostId, getPostById };
 }

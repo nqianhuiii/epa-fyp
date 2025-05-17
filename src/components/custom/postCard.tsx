@@ -6,6 +6,7 @@ import { HStack } from "../../components/ui/hstack";
 import { Text } from "../../components/ui/text";
 import { VStack } from "../../components/ui/vstack";
 import { useAuthStore } from "../../store/authStore";
+import { useForumStore } from "../../store/forumStore";
 
 interface Post {
   id: string;
@@ -29,17 +30,20 @@ interface PostCardProps {
   onImagePress?: (imageUrl: string) => void;
 }
 
-export function PostCard({ 
+const PostCard: React.FC<PostCardProps> = ({ 
   post, 
-  commentsCount = 0, 
+  commentsCount, 
   onPostPress, 
   onLikePress,
   isDetailView = false,
   onImagePress
-}: PostCardProps) {
+}) => {
   const { user } = useAuthStore();
   const isLiked = post.likedBy?.includes(user?.uid ?? "");
-  
+
+  const getCommentsCount = useForumStore(state =>state.getCommentsCount);
+  const commentCount = commentsCount ?? getCommentsCount(post.id);
+
   const formatDate = (date: Date) => {
     return formatDistanceToNow(date, { addSuffix: true });
   };
@@ -131,7 +135,9 @@ export function PostCard({
 
         <TouchableOpacity className="flex-row items-center">
             <Ionicons name="chatbubble-outline" size={20} color="#4B5563" />
-            <Text className="ml-2">{commentsCount} Comments</Text>
+            <Text className="ml-2">{commentCount} Comments</Text>
+
+
         </TouchableOpacity>
         </View>
     </View>
@@ -156,3 +162,5 @@ export function PostCard({
     </TouchableOpacity>
   );
 }
+
+export default PostCard;

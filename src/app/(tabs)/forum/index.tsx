@@ -7,11 +7,12 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { PostCard } from "../../../components/custom/postCard";
+import PostCard from "../../../components/custom/postCard";
 import { Button, ButtonText } from "../../../components/ui/button";
 import { HStack } from "../../../components/ui/hstack";
 import { Text } from "../../../components/ui/text";
 import { useForumController } from "../../../hooks/useForumController";
+import { getCommentsByPostId } from "../../../services/forumService";
 import { useAuthStore } from "../../../store/authStore";
 import { useForumStore } from "../../../store/forumStore";
 
@@ -21,7 +22,7 @@ export default function ForumScreen() {
   const [isLoading, setIsLoading] = useState(false);
   const { getAllPosts, getPostsByUserId } = useForumController();
   const { user } = useAuthStore();
-  const { toggleLike, updatePostLikes } = useForumStore();
+  const { toggleLike, updatePostLikes, updatePostComments } = useForumStore();
 
   useEffect(() => {
     loadPosts();
@@ -45,10 +46,34 @@ export default function ForumScreen() {
       });
       
       setPosts(data);
+
+      await loadCommentsForPosts(data);
     } catch (error) {
       console.error("Failed to load posts:", error);
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  // load comments for posts and update the store
+  const loadCommentsForPosts = async (posts: any[]) => {
+    try {
+      // Use Promise.all to load comments for all posts concurrently
+      await Promise.all(posts.map(async (post) => {
+        try {
+          // Fetch comments for each post
+          const comments = await getCommentsByPostId(post.id);
+          
+          // Update the store with the fetched comments
+          updatePostComments(post.id, comments);
+        } catch (error) {
+          console.error(`Failed to load comments for post ${post.id}:`, error);
+          // If there's an error, just set empty comments array for this post
+          updatePostComments(post.id, []);
+        }
+      }));
+    } catch (error) {
+      console.error("Failed to load comments for posts:", error);
     }
   };
 

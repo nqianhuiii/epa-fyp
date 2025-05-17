@@ -1,6 +1,7 @@
 import { addDoc, arrayRemove, arrayUnion, collection, doc, getDoc, getDocs, orderBy, query, serverTimestamp, setDoc, updateDoc, where } from "firebase/firestore";
 import { db } from "../config/firebaseConfig";
 import { ForumComment } from '../store/forumStore';
+import { getUsernameById } from "./userService";
 
 export interface PostData{
   userId: string,
@@ -90,22 +91,28 @@ export const fetchAllPosts = async () => {
 
     const querySnapshot = await getDocs(postsQuery);
 
-    return querySnapshot.docs.map(doc => {
-      const data = doc.data();
-      return {
-        id: doc.id,
-        title: data.title,
-        description: data.description,
-        imageUrls: data.imageUrls ?? [],
-        userId: data.userId,
-        username: data.username ?? 'Unknown',
-        likedBy: data.likedBy ?? [],
-        createdAt: data.createdAt,
-      };
-    });
+    const posts = await Promise.all(
+      querySnapshot.docs.map( async doc => {
+        const data = doc.data();
+        const username = await getUsernameById(data.userId);
+  
+        return {
+          id: doc.id,
+          title: data.title,
+          description: data.description,
+          imageUrls: data.imageUrls ?? [],
+          userId: data.userId,
+          username: username ?? 'Unknown',
+          likedBy: data.likedBy ?? [],
+          createdAt: data.createdAt,
+        };
+      })
+    );
+
+    return posts;
   } catch (error) {
-    console.error("Error fetching all posts:", error);
-    throw new Error("Failed to get all posts");
+    console.error("Error getting posts by user ID:", error);
+    throw new Error("Failed to get the user posts");
   }
 };
 
@@ -125,19 +132,26 @@ export const fetchPostsByUserId = async (userId?: string) => {
 
     const querySnapshot = await getDocs(postsQuery);
 
-    return querySnapshot.docs.map(doc => {
-      const data = doc.data();
-      return {
-        id: doc.id,
-        title: data.title,
-        description: data.description,
-        imageUrls: data.imageUrls ?? [],
-        userId: data.userId,
-        username: data.username ?? 'Unknown',
-        likedBy: data.likedBy ?? [],
-        createdAt: data.createdAt,
-      };
-    });
+    const posts = await Promise.all(
+      querySnapshot.docs.map( async doc => {
+        const data = doc.data();
+        const username = await getUsernameById(data.userId);
+        console.log('username', username);
+  
+        return {
+          id: doc.id,
+          title: data.title,
+          description: data.description,
+          imageUrls: data.imageUrls ?? [],
+          userId: data.userId,
+          username: username ?? 'Unknown',
+          likedBy: data.likedBy ?? [],
+          createdAt: data.createdAt,
+        };
+      })
+    );
+
+    return posts;
   } catch (error) {
     console.error("Error getting posts by user ID:", error);
     throw new Error("Failed to get the user posts");
@@ -172,28 +186,32 @@ export const toggleLikeOnPost = async (postId: string, userId: string): Promise<
 
 // Add a comment to a post
 export const addCommentToPost = async (
-  postId: string, 
+  postId: string,
   comment: Omit<ForumComment, 'id' | 'createdAt'>
 ): Promise<ForumComment> => {
   try {
-    const commentsRef = collection(db, 'posts', postId, 'comments');
-    
-    const newCommentRef = await addDoc(commentsRef, {
+    const commentsRef = collection(db, "posts", postId, "comments");
+    const docRef = await addDoc(commentsRef, {
       ...comment,
-      createdAt: serverTimestamp()
+      createdAt: serverTimestamp(),
     });
-    
+
+    const docSnap = await getDoc(docRef);
+    const data = docSnap.data();
+
     return {
-      id: newCommentRef.id,
-      ...comment,
-      createdAt: new Date()
+      id: docRef.id,
+      text: data?.text || "",
+      userId: data?.userId || "",
+      createdAt: data?.createdAt?.toDate?.() || new Date(),
     };
   } catch (error) {
-    console.error('Error adding comment:', error);
+    console.error("Error adding comment:", error);
     throw error;
   }
 };
 
+// get post by the post id (the user clicked)
 export const getPostById = async (postId: string) => {
   try {
     const postRef = doc(db, 'posts', postId);
@@ -204,8 +222,11 @@ export const getPostById = async (postId: string) => {
     }
 
     const data = postSnap.data();
+    const username = await getUsernameById(data.userId);
+
     return {
       id: postSnap.id,
+      username: username || "Unknown User",
       ...data,
     };
   } catch (error) {
@@ -214,27 +235,30 @@ export const getPostById = async (postId: string) => {
   }
 };
 
-export const getCommentsByPostId = async (postId: string) => {
+export const getCommentsByPostId = async (postId: string): Promise<ForumComment[]> => {
   try {
-    const commentsQuery = query(
-      collection(db, "posts", postId, "comments"),
-      orderBy("createdAt", "asc")
-    );
-
-    const querySnapshot = await getDocs(commentsQuery);
-
-    return querySnapshot.docs.map(doc => {
-      const data = doc.data();
-      return {
-        id: doc.id,
-        text: data.text,
-        userId: data.userId,
-        username: data.username,
-        createdAt: data.createdAt,
-      };
-    });
+    const commentsRef = collection(db, "posts", postId, "comments");
+    const q = query(commentsRef, orderBy("createdAt", "asc"));
+    const querySnapshot = await getDocs(q);
+    
+    const comments: ForumComment[] = await Promise.all(
+      querySnapshot.docs.map( async (docSnap) => {
+        const data = docSnap.data();
+        const username = await getUsernameById(data.userId);
+  
+        return {
+          id: docSnap.id,
+          text: data.text,
+          userId: data.userId,
+          createdAt: data.createdAt?.toDate?.() || new Date(),
+          username: username || "Unknown User",
+        };
+      })
+    )
+    
+    return comments;
   } catch (error) {
-    console.error("Error fetching comments:", error);
+    console.error("Error getting comments:", error);
     throw new Error("Failed to get comments");
   }
 };
@@ -242,7 +266,7 @@ export const getCommentsByPostId = async (postId: string) => {
 export const addComment = async (postId: string, commentData: {
   text: string;
   userId: string;
-  username: string;
+  // username: string;
 }) => {
   try {
     const commentRef = await addDoc(collection(db, "posts", postId, "comments"), {

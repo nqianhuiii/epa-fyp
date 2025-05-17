@@ -6,6 +6,7 @@ export interface ForumComment {
   text: string;
   userId: string;
   createdAt: Date;
+  username?: string;
 }
 
 export interface ForumState {
@@ -21,6 +22,10 @@ export interface ForumState {
   
   // New function to update local state after successful like toggle
   updatePostLikes: (postId: string, likedBy: string[]) => void;
+
+  getCommentsCount: (postId: string) => number;
+
+  updatePostComments: (postId: string, comment: ForumComment[]) => void;
 }
 
 export const useForumStore = create<ForumState>((set, get) => ({
@@ -75,4 +80,20 @@ export const useForumStore = create<ForumState>((set, get) => ({
       },
     }));
   },
+
+  updatePostComments: (postId, comment) => {
+    set((state) => ({
+      commentsByPost: {
+        ...state.commentsByPost,
+        [postId]: comment || [],
+      },
+    }));
+  },
+
+  // get the count of comment from the store
+  getCommentsCount: (postId) => {
+     const state = get();
+     return state.commentsByPost[postId]?.length || 0;
+  },
+
 }));
