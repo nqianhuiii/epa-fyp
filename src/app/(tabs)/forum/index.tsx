@@ -13,6 +13,7 @@ import { usePostActionSelection } from "../../../hooks/usePostActionSelection";
 import { getCommentsByPostId } from "../../../services/forumService";
 import { useAuthStore } from "../../../store/authStore";
 import { useForumStore } from "../../../store/forumStore";
+import { useForumTabStore } from "../../..//store/forumTabStore";
 
 export default function ForumScreen() {
   const [activeTab, setActiveTab] = useState("all");
@@ -21,6 +22,7 @@ export default function ForumScreen() {
   const { getAllPosts, getPostsByUserId } = useForumController();
   const { user } = useAuthStore();
   const { toggleLike, updatePostLikes, updatePostComments } = useForumStore();
+  const { setGlobalActiveTab } = useForumTabStore();
   const { selectedPost, handleLongPress, cancelSelection, handleEditPost, handleDeletePost } = usePostActionSelection(activeTab, setPosts);
   const navigation = useNavigation();
   
@@ -65,7 +67,7 @@ export default function ForumScreen() {
       });
 
       setPosts(data);
-      await loadCommentsForPosts(data);
+      loadCommentsForPosts(data); // load post first, then comments
     } catch (error) {
       console.error("Failed to load posts:", error);
     } finally {
@@ -145,6 +147,7 @@ export default function ForumScreen() {
             } rounded-lg flex-1`}
             onPress={() => {
               setActiveTab("all");
+              setGlobalActiveTab("all");
               cancelSelection();
             }}
           >
@@ -164,6 +167,7 @@ export default function ForumScreen() {
             } rounded-lg flex-1`}
             onPress={() => {
               setActiveTab("my");
+              setGlobalActiveTab("my");
               cancelSelection();
             }}
           >

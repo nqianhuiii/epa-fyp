@@ -1,29 +1,20 @@
 import { Ionicons } from "@expo/vector-icons";
+import { formatDistanceToNow } from 'date-fns';
 import { router, Stack, useLocalSearchParams } from "expo-router";
 import { useEffect, useRef, useState } from "react";
-import {
-  ActivityIndicator,
-  Keyboard,
-  KeyboardAvoidingView,
-  Platform,
-  ScrollView,
-  TextInput,
-  TouchableOpacity,
-  View
-} from "react-native";
-import {
-  Avatar,
-  AvatarFallbackText
-} from "../../../components/ui/avatar";
+import { ActivityIndicator, Keyboard, KeyboardAvoidingView, Platform, ScrollView, TextInput, TouchableOpacity, View } from "react-native";
+import { useForumTabStore } from "../../..//store/forumTabStore";
+import BackButton from "../../../components/custom/customBackButton";
+import { useForumActionSheet } from "../../../components/custom/forumActionSheet";
+import PostCard from "../../../components/custom/postCard";
+import { Avatar, AvatarFallbackText } from "../../../components/ui/avatar";
 import { HStack } from "../../../components/ui/hstack";
 import { Text } from "../../../components/ui/text";
 import { VStack } from "../../../components/ui/vstack";
 import { useForumController } from "../../../hooks/useForumController";
 import { useAuthStore } from "../../../store/authStore";
-import PostCard from "../../../components/custom/postCard";
 import { useForumStore } from "../../../store/forumStore";
-import { formatDistanceToNow } from 'date-fns';
-import BackButton from "../../../components/custom/customBackButton";
+
 
 export default function ForumDetailScreen() {
   const { id } = useLocalSearchParams();
@@ -34,14 +25,14 @@ export default function ForumDetailScreen() {
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [keyboardVisible, setKeyboardVisible] = useState(false);
-
   const { commentsByPost, addComment, toggleLike } = useForumStore();
   const comments = commentsByPost[postId] || [];
   const { getPostById, getCommentsByPostId } = useForumController();
   const { user } = useAuthStore();
-
+  const { activeTab } = useForumTabStore();
   const inputRef = useRef<TextInput>(null);
   const scrollViewRef = useRef<ScrollView>(null);
+  const { forumActionSheet, onOpen } = useForumActionSheet();
 
   useEffect(() => {
     loadPostDetails();
@@ -179,7 +170,14 @@ export default function ForumDetailScreen() {
           headerTitle: "Post",
           headerShadowVisible: false,
           headerStyle: { backgroundColor: "white" },
-          headerLeft: () => BackButton()
+          headerLeft: () => BackButton(),
+          headerRight: () => (
+            activeTab === 'my' && (
+              <TouchableOpacity onPress={onOpen}>
+                <Ionicons name="ellipsis-vertical" size={20} color="gray"/>
+              </TouchableOpacity>
+            )
+          )
         }}
       />
 
@@ -253,6 +251,7 @@ export default function ForumDetailScreen() {
           </HStack>
         </View>
       </View>
+      {forumActionSheet()}
     </KeyboardAvoidingView>
   );
 }

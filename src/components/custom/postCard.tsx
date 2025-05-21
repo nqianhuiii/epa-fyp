@@ -28,7 +28,7 @@ interface PostCardProps {
   onLikePress: (postId: string) => void;
   isDetailView?: boolean;
   onImagePress?: (imageUrl: string) => void;
-  onLongPress: (postId: string) => void;
+  onLongPress?: (postId: string) => void;
   isSelected?: boolean;
 }
 
@@ -71,7 +71,9 @@ const PostCard: React.FC<PostCardProps> = ({
   };
 
   const handleLongPress = () => {
-    onLongPress(post.id);
+    if(onLongPress) {
+      onLongPress(post.id);
+    }
   };
 
   const renderContent = () => (
