@@ -1,6 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import { formatDistanceToNow } from 'date-fns';
-import { Image, ScrollView, TouchableOpacity, View } from "react-native";
+import { Image, ScrollView, TouchableOpacity, View, Pressable } from "react-native";
 import { Avatar, AvatarFallbackText, AvatarImage } from "../../components/ui/avatar";
 import { HStack } from "../../components/ui/hstack";
 import { Text } from "../../components/ui/text";
@@ -15,7 +15,7 @@ interface Post {
   imageUrls?: string[];
   userId: string;
   username?: string;
-  likedBy?: string[] ;
+  likedBy?: string[];
   createdAt: {
     toDate: () => Date;
   };
@@ -28,20 +28,24 @@ interface PostCardProps {
   onLikePress: (postId: string) => void;
   isDetailView?: boolean;
   onImagePress?: (imageUrl: string) => void;
+  onLongPress: (postId: string) => void;
+  isSelected?: boolean;
 }
 
-const PostCard: React.FC<PostCardProps> = ({ 
-  post, 
-  commentsCount, 
-  onPostPress, 
+const PostCard: React.FC<PostCardProps> = ({
+  post,
+  commentsCount,
+  onPostPress,
   onLikePress,
   isDetailView = false,
-  onImagePress
+  onImagePress,
+  onLongPress,
+  isSelected = false
 }) => {
   const { user } = useAuthStore();
   const isLiked = post.likedBy?.includes(user?.uid ?? "");
 
-  const getCommentsCount = useForumStore(state =>state.getCommentsCount);
+  const getCommentsCount = useForumStore(state => state.getCommentsCount);
   const commentCount = commentsCount ?? getCommentsCount(post.id);
 
   const formatDate = (date: Date) => {
@@ -64,6 +68,10 @@ const PostCard: React.FC<PostCardProps> = ({
     if (onImagePress) {
       onImagePress(imageUrl);
     }
+  };
+
+  const handleLongPress = () => {
+    onLongPress(post.id);
   };
 
   const renderContent = () => (
@@ -106,8 +114,8 @@ const PostCard: React.FC<PostCardProps> = ({
           ) : (
             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
               {post.imageUrls.map((imageUrl, index) => (
-                <TouchableOpacity 
-                  key={index} 
+                <TouchableOpacity
+                  key={index}
                   onPress={(e) => handleImagePress(imageUrl, e)}
                 >
                   <Image
@@ -125,41 +133,53 @@ const PostCard: React.FC<PostCardProps> = ({
       {/* Likes and Comments */}
       <View className="mt-4 flex-row items-center">
         <TouchableOpacity onPress={handleLikePress} className="flex-row items-center mr-6">
-            <Ionicons 
-            name={isLiked ? "thumbs-up" : "thumbs-up-outline"} 
-            size={20} 
-            color={isLiked ? "#10B981" : "#4B5563"} 
-            />
-            <Text className="ml-2">{post.likedBy?.length || 0} Likes</Text>
+          <Ionicons
+            name={isLiked ? "thumbs-up" : "thumbs-up-outline"}
+            size={20}
+            color={isLiked ? "#10B981" : "#4B5563"}
+          />
+          <Text className="ml-2">{post.likedBy?.length || 0} Likes</Text>
         </TouchableOpacity>
 
         <TouchableOpacity className="flex-row items-center">
-            <Ionicons name="chatbubble-outline" size={20} color="#4B5563" />
-            <Text className="ml-2">{commentCount} Comments</Text>
-
-
+          <Ionicons name="chatbubble-outline" size={20} color="#4B5563" />
+          <Text className="ml-2">{commentCount} Comments</Text>
         </TouchableOpacity>
-        </View>
+      </View>
     </View>
   );
 
   if (isDetailView) {
     return (
-      <View className="bg-white pt-4 pb-3 mb-2">
+      <View 
+        className={`bg-white pt-4 pb-3 mb-2 ${isSelected ? 'border-2 border-emerald-400 bg-emerald-50' : ''}`}
+      >
         {renderContent()}
+        
+        {/* Selection indicator */}
+        {isSelected && (
+          <View className="absolute top-2 right-2">
+            <View className="w-6 h-6 rounded-full bg-emerald-400 items-center justify-center">
+              <Ionicons name="checkmark" size={18} color="white" />
+            </View>
+          </View>
+        )}
       </View>
     );
   }
 
-  //  ForumScreen, not detail view
+  // ForumScreen, not detail view
   return (
-    <TouchableOpacity 
-      className="bg-white pt-4 pb-3 mb-2"
+    <Pressable
+      className={`bg-white pt-4 pb-3 mb-2 ${isSelected ? 'border-2 border-emerald-400 bg-emerald-50' : ''}`}
       onPress={handlePostPress}
-      activeOpacity={0.7}
+      onLongPress={handleLongPress}
+      delayLongPress={500} // 500ms for long press
+      android_ripple={{ color: '#e6e6e6' }}
+      style={({ pressed }) => [{ opacity: pressed ? 0.9 : 1 }]}
     >
       {renderContent()}
-    </TouchableOpacity>
+    </Pressable>
   );
 }
 

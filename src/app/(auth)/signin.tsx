@@ -1,15 +1,16 @@
 import { useRouter } from "expo-router";
-import { useState } from "react";
-import { ActivityIndicator, KeyboardAvoidingView, Platform, SafeAreaView } from "react-native";
+import { JSX, RefAttributes, useState } from "react";
+import { ActivityIndicator, ColorValue, KeyboardAvoidingView, Platform, SafeAreaView } from "react-native";
 import { Alert, AlertIcon, AlertText } from "../../components/ui/alert";
 import { Button, ButtonText } from "../../components/ui/button";
 import { FormControl, FormControlLabelText } from "../../components/ui/form-control";
 import { Heading } from "../../components/ui/heading";
-import { EyeIcon, EyeOffIcon, InfoIcon } from "../../components/ui/icon";
+import { InfoIcon } from "../../components/ui/icon";
 import { Input, InputField, InputIcon, InputSlot } from "../../components/ui/input";
 import { Text } from "../../components/ui/text";
 import { VStack } from "../../components/ui/vstack";
 import { useAuthController } from "../../hooks/useAuthController";
+import { Ionicons } from '@expo/vector-icons';
 
 export default function SignIn(){
     const [email, setEmail] = useState('');
@@ -19,6 +20,7 @@ export default function SignIn(){
     const [errorMessage, setErrorMessage] = useState('');
     const [showError, setShowError] = useState(false);
     const {signUp, signIn} = useAuthController();
+
 
     const handleError = (message: string) => {
         console.log("Setting error:", message);
@@ -93,9 +95,11 @@ export default function SignIn(){
                   placeholder="Enter password"
                 />
                 <InputSlot className="pr-3" onPress={togglePasswordVisibility}>
-                  <InputIcon>
-                    {showPassword ? <EyeIcon/> : <EyeOffIcon/>}
-                  </InputIcon>
+                  <Ionicons 
+                    name={showPassword ? "eye-outline" : "eye-off-outline"} 
+                    size={24} 
+                    color="gray" 
+                  />
                 </InputSlot>
               </Input>
 

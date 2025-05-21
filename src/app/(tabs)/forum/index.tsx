@@ -1,17 +1,15 @@
 import { Ionicons } from "@expo/vector-icons";
-import { router, Stack } from "expo-router";
-import { useEffect, useState } from "react";
-import {
-  ActivityIndicator,
-  ScrollView,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { router, Stack, useNavigation } from "expo-router";
+import { useEffect, useLayoutEffect, useState } from "react";
+import { ActivityIndicator, ScrollView, TouchableOpacity, View } from "react-native";
+import { HeaderRightButton } from "../../../components/custom/headerRightButton";
+import { HeaderLeftButton } from "../../../components/custom/headerLeftButton";
 import PostCard from "../../../components/custom/postCard";
 import { Button, ButtonText } from "../../../components/ui/button";
 import { HStack } from "../../../components/ui/hstack";
 import { Text } from "../../../components/ui/text";
 import { useForumController } from "../../../hooks/useForumController";
+import { usePostActionSelection } from "../../../hooks/usePostActionSelection";
 import { getCommentsByPostId } from "../../../services/forumService";
 import { useAuthStore } from "../../../store/authStore";
 import { useForumStore } from "../../../store/forumStore";
@@ -23,10 +21,32 @@ export default function ForumScreen() {
   const { getAllPosts, getPostsByUserId } = useForumController();
   const { user } = useAuthStore();
   const { toggleLike, updatePostLikes, updatePostComments } = useForumStore();
-
+  const { selectedPost, handleLongPress, cancelSelection, handleEditPost, handleDeletePost } = usePostActionSelection(activeTab, setPosts);
+  const navigation = useNavigation();
+  
   useEffect(() => {
     loadPosts();
   }, [activeTab]);
+
+  useLayoutEffect(() => {
+    if(selectedPost){
+      navigation.setOptions({
+        headerRight: () => (
+          <HeaderRightButton
+            onEdit={() => handleEditPost(selectedPost)}
+            onCancel={() => cancelSelection()}
+          />           
+        ), 
+        headerLeft: () => (
+          <HeaderLeftButton
+             onDelete={() => handleDeletePost(selectedPost)}
+          />
+        )
+      });
+    }else{
+      navigation.setOptions({headerRight: () => null, headerLeft: () => null});
+    }
+  }, [selectedPost]);
 
   const loadPosts = async () => {
     setIsLoading(true);
@@ -37,16 +57,14 @@ export default function ForumScreen() {
       } else {
         data = await getPostsByUserId(user?.uid);
       }
-      
-      // Sync the likes data with the store
-      data.forEach(post => {
+
+      data.forEach((post) => {
         if (post.likedBy) {
           updatePostLikes(post.id, post.likedBy);
         }
       });
-      
-      setPosts(data);
 
+      setPosts(data);
       await loadCommentsForPosts(data);
     } catch (error) {
       console.error("Failed to load posts:", error);
@@ -55,30 +73,25 @@ export default function ForumScreen() {
     }
   };
 
-  // load comments for posts and update the store
   const loadCommentsForPosts = async (posts: any[]) => {
     try {
-      // Use Promise.all to load comments for all posts concurrently
-      await Promise.all(posts.map(async (post) => {
-        try {
-          // Fetch comments for each post
-          const comments = await getCommentsByPostId(post.id);
-          
-          // Update the store with the fetched comments
-          updatePostComments(post.id, comments);
-        } catch (error) {
-          console.error(`Failed to load comments for post ${post.id}:`, error);
-          // If there's an error, just set empty comments array for this post
-          updatePostComments(post.id, []);
-        }
-      }));
+      await Promise.all(
+        posts.map(async (post) => {
+          try {
+            const comments = await getCommentsByPostId(post.id);
+            updatePostComments(post.id, comments);
+          } catch (error) {
+            console.error(`Failed to load comments for post ${post.id}:`, error);
+            updatePostComments(post.id, []);
+          }
+        })
+      );
     } catch (error) {
       console.error("Failed to load comments for posts:", error);
     }
   };
 
   const navigateToDetail = (postId: string) => {
-    console.log("Navigating to post detail:", postId);
     router.push(`/(tabs)/forum/${postId}`);
   };
 
@@ -86,19 +99,18 @@ export default function ForumScreen() {
     if (user?.uid) {
       try {
         await toggleLike(postId, user.uid);
-        
-        // Update UI after like toggle
-        setPosts(prevPosts => 
-          prevPosts.map(post => {
+
+        setPosts((prevPosts) =>
+          prevPosts.map((post) => {
             if (post.id === postId) {
               const isLiked = post.likedBy?.includes(user.uid) || false;
               const updatedLikedBy = isLiked
                 ? post.likedBy.filter((uid: string) => uid !== user.uid)
                 : [...(post.likedBy || []), user.uid];
-              
+
               return {
                 ...post,
-                likedBy: updatedLikedBy
+                likedBy: updatedLikedBy,
               };
             }
             return post;
@@ -115,7 +127,7 @@ export default function ForumScreen() {
       <Stack.Screen
         options={{
           headerShown: true,
-          headerTitle: "Forum",
+          headerTitle: selectedPost ? "Post Actions" : "Forum",
           headerShadowVisible: false,
           headerStyle: {
             backgroundColor: "white",
@@ -131,7 +143,10 @@ export default function ForumScreen() {
                 ? "bg-emerald-400"
                 : "bg-white border border-emerald-400"
             } rounded-lg flex-1`}
-            onPress={() => setActiveTab("all")}
+            onPress={() => {
+              setActiveTab("all");
+              cancelSelection();
+            }}
           >
             <ButtonText
               className={
@@ -147,7 +162,10 @@ export default function ForumScreen() {
                 ? "bg-emerald-400"
                 : "bg-white border border-emerald-400"
             } rounded-lg flex-1`}
-            onPress={() => setActiveTab("my")}
+            onPress={() => {
+              setActiveTab("my");
+              cancelSelection();
+            }}
           >
             <ButtonText
               className={
@@ -183,6 +201,8 @@ export default function ForumScreen() {
                 key={post.id}
                 post={post}
                 onPostPress={navigateToDetail}
+                onLongPress={() => handleLongPress(post.id)}
+                isSelected={post.id === selectedPost}
                 onLikePress={() => {
                   if (user?.uid) {
                     handleLike(post.id);
