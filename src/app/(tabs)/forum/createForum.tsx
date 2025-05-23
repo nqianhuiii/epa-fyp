@@ -77,7 +77,7 @@ export default function CreateForum() {
           
           router.back();
         } catch (error) {
-          console.error("Error in handleSubmit:", error);
+          console.log("Error in handleSubmit:", error);
         } finally {
           setLoading(false);
         }

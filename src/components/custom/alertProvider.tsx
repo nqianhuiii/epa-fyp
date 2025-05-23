@@ -1,7 +1,7 @@
+import { Ionicons } from '@expo/vector-icons';
 import { createContext, useContext, useState } from "react";
 import { View } from "react-native";
-import { Alert, AlertIcon, AlertText } from "../ui/alert";
-import { CheckIcon, InfoIcon } from "../ui/icon";
+import { Alert, AlertText } from "../ui/alert";
 
 type AlertType = "success" | "error" | "info" | "warning";
 
@@ -37,15 +37,19 @@ export const AlertProvider: React.FC<{children:React.ReactNode}> = ({children}) 
         },duration);
     };
 
-    const getIconForType = () =>{
-        switch(alertType){
+    const getIconForType = () => {
+        const baseProps = { size: 20 };
+
+        switch (alertType) {
             case 'success':
-                return CheckIcon;
-            case 'warning':
+            return <Ionicons name="checkmark-circle" color="#22c55e" {...baseProps} />; // green
             case 'error':
-                return AlertIcon;
-            default: 
-                return InfoIcon;
+            return <Ionicons name="close-circle" color="#ef4444" {...baseProps} />; // red
+            case 'warning':
+            return <Ionicons name="warning" color="#facc15" {...baseProps} />; // yellow
+            case 'info':
+            default:
+            return <Ionicons name="information-circle" color="#3b82f6" {...baseProps} />; // blue
         }
     };
 
@@ -55,7 +59,7 @@ export const AlertProvider: React.FC<{children:React.ReactNode}> = ({children}) 
             {visible && (
                 <View className="absolute bottom-4 left-4 right-4 z-50">
                     <Alert action={alertType} variant="solid">
-                        <AlertIcon as={getIconForType()}/>
+                        {getIconForType()}
                         <AlertText>{message}</AlertText>
                     </Alert>
                 </View>

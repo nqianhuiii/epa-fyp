@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { ActivityIndicator, Keyboard, KeyboardAvoidingView, Platform, ScrollView, TextInput, TouchableOpacity, View } from "react-native";
 import { useForumTabStore } from "../../..//store/forumTabStore";
 import BackButton from "../../../components/custom/customBackButton";
-import { useForumActionSheet } from "../../../components/custom/forumActionSheet";
+import { usePostActionSheet } from "../../../components/custom/postActionSheet";
 import PostCard from "../../../components/custom/postCard";
 import { Avatar, AvatarFallbackText } from "../../../components/ui/avatar";
 import { HStack } from "../../../components/ui/hstack";
@@ -14,7 +14,6 @@ import { VStack } from "../../../components/ui/vstack";
 import { useForumController } from "../../../hooks/useForumController";
 import { useAuthStore } from "../../../store/authStore";
 import { useForumStore } from "../../../store/forumStore";
-
 
 export default function ForumDetailScreen() {
   const { id } = useLocalSearchParams();
@@ -27,12 +26,12 @@ export default function ForumDetailScreen() {
   const [keyboardVisible, setKeyboardVisible] = useState(false);
   const { commentsByPost, addComment, toggleLike } = useForumStore();
   const comments = commentsByPost[postId] || [];
-  const { getPostById, getCommentsByPostId } = useForumController();
+  const { getPostById, fetchCommentsByPostId } = useForumController();
   const { user } = useAuthStore();
   const { activeTab } = useForumTabStore();
   const inputRef = useRef<TextInput>(null);
   const scrollViewRef = useRef<ScrollView>(null);
-  const { forumActionSheet, onOpen } = useForumActionSheet();
+  const { forumActionSheet, onOpen } = usePostActionSheet();
 
   useEffect(() => {
     loadPostDetails();
@@ -52,7 +51,7 @@ export default function ForumDetailScreen() {
       if (postId) {
         const postData = await getPostById(postId);
         setPost(postData);
-        await getCommentsByPostId(postId);
+        await fetchCommentsByPostId(postId);
       }
     } catch (error) {
       console.error("Failed to load post details:", error);
@@ -173,7 +172,7 @@ export default function ForumDetailScreen() {
           headerLeft: () => BackButton(),
           headerRight: () => (
             activeTab === 'my' && (
-              <TouchableOpacity onPress={onOpen}>
+              <TouchableOpacity onPress={() => onOpen(postId)}>
                 <Ionicons name="ellipsis-vertical" size={20} color="gray"/>
               </TouchableOpacity>
             )

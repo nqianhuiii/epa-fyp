@@ -14,6 +14,8 @@ import { getCommentsByPostId } from "../../../services/forumService";
 import { useAuthStore } from "../../../store/authStore";
 import { useForumStore } from "../../../store/forumStore";
 import { useForumTabStore } from "../../..//store/forumTabStore";
+import { useFocusEffect } from '@react-navigation/native';
+import React from "react";
 
 export default function ForumScreen() {
   const [activeTab, setActiveTab] = useState("all");
@@ -23,12 +25,14 @@ export default function ForumScreen() {
   const { user } = useAuthStore();
   const { toggleLike, updatePostLikes, updatePostComments } = useForumStore();
   const { setGlobalActiveTab } = useForumTabStore();
-  const { selectedPost, handleLongPress, cancelSelection, handleEditPost, handleDeletePost } = usePostActionSelection(activeTab, setPosts);
+  const { selectedPost, handleLongPress, cancelSelection, handleEditPost, openDeleteDialog } = usePostActionSelection(activeTab, setPosts);
   const navigation = useNavigation();
   
-  useEffect(() => {
+  useFocusEffect(
+  React.useCallback(() => {
     loadPosts();
-  }, [activeTab]);
+  }, [activeTab])
+);
 
   useLayoutEffect(() => {
     if(selectedPost){
@@ -41,7 +45,7 @@ export default function ForumScreen() {
         ), 
         headerLeft: () => (
           <HeaderLeftButton
-             onDelete={() => handleDeletePost(selectedPost)}
+             onDelete={() => openDeleteDialog(selectedPost)}
           />
         )
       });
