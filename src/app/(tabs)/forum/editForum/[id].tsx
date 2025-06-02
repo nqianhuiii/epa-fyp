@@ -1,21 +1,22 @@
 import { Ionicons } from "@expo/vector-icons";
-import { router, Stack } from "expo-router";
-import { useCallback, useState } from "react";
+import { router, Stack, useLocalSearchParams } from "expo-router";
+import { useCallback, useEffect, useState } from "react";
 import { KeyboardAvoidingView, Platform, SafeAreaView, ScrollView, TouchableOpacity, View } from "react-native";
-import { useAlert } from "../../../components/custom/alertProvider";
-import CustomActivityIndicator from "../../../components/custom/customActivityIndicator";
-import BackButton from "../../../components/custom/customBackButton";
-import CustomInputWithErrorMsg from "../../../components/custom/customInputWithErrorMsg";
-import { Button, ButtonText } from "../../../components/ui/button";
-import { FormControl, FormControlHelperText, FormControlLabelText } from "../../../components/ui/form-control";
-import { Image } from "../../../components/ui/image";
-import { Text } from "../../../components/ui/text";
-import { Textarea, TextareaInput } from "../../../components/ui/textarea";
-import { VStack } from "../../../components/ui/vstack";
-import { useForumController } from "../../../hooks/useForumController";
-import { useImagePicker } from "../../../hooks/useImagePicker";
-import { useAuthStore } from "../../../store/authStore";
-import { validateForumForm } from "../../../utils/formValidation";
+import { useAlert } from "../../../../components/custom/alertProvider";
+import BackButton from "../../../../components/custom/customBackButton";
+import CustomInputWithErrorMsg from "../../../../components/custom/customInputWithErrorMsg";
+import { Button, ButtonText } from "../../../../components/ui/button";
+import { FormControl, FormControlHelperText, FormControlLabelText } from "../../../../components/ui/form-control";
+import { Image } from "../../../../components/ui/image";
+import { Text } from "../../../../components/ui/text";
+import { Textarea, TextareaInput } from "../../../../components/ui/textarea";
+import { VStack } from "../../../../components/ui/vstack";
+import { useForumController } from "../../../../hooks/useForumController";
+import { useImagePicker } from "../../../../hooks/useImagePicker";
+import { useAuthStore } from "../../../../store/authStore";
+import { validateForumForm } from "../../../../utils/formValidation";
+import LoadingScreenWithHeader from "../../../../components/custom/loadingScreenWithHeader";
+import CustomActivityIndicator from "../../../../components/custom/customActivityIndicator";
 
 type FormField = 'title' | 'description';
 interface FormErrors {
@@ -23,14 +24,92 @@ interface FormErrors {
     description?: string;
 }
 
-export default function CreateForum() {
+interface Post {
+    id: string;
+    title?: string;
+    description?: string;
+    imageUrls?: string[];
+    userId?: string;
+    username?: string;
+    likedBy?: string[];
+    createdAt?: {
+        toDate: () => Date;
+    } | Date;
+}
+
+export default function EditForum() {
+    const { id } = useLocalSearchParams<{ id: string }>();
+
     const [formState, setFormState] = useState<{title: string, description: string}>({title: '', description: ''});
     const [formErrors, setFormErrors] = useState<FormErrors>({});
     const [loading, setLoading] = useState(false);
+    const [initialLoading, setInitialLoading] = useState(true); // loading indicator when fetching the selected post for edit
+    const [originalPost, setOriginalPost] = useState<Post | null>(null);
+    
     const { showAlert } = useAlert();
-    const { images, pickImages, removeImage } = useImagePicker(5);
-    const { createPost } = useForumController();
+    const { images, pickImages, removeImage, setImages } = useImagePicker(5);
+
+    // const { getPostById, updatePost } = useForumController();
+    const { getPostById, handleUpdatePost } = useForumController();
     const { user } = useAuthStore();
+
+
+    // Load existing post data
+    useEffect(() => {
+        const loadPostData = async () => {
+            if (!id) {
+                showAlert("Post ID not found", "error");
+                router.back();
+                return;
+            }
+
+            try {
+                setInitialLoading(true);
+                const post = await getPostById(id);
+                
+                if (!post) {
+                    showAlert("Post not found", "error");
+                    router.back();
+                    return;
+                }
+
+                // Check if the post has the required properties
+                if (!('title' in post) || !('description' in post) || !('userId' in post)) {
+                    console.error("Post object is missing required properties:", post);
+                    showAlert("Invalid post data", "error");
+                    router.back();
+                    return;
+                }
+
+                // Check if user owns this post
+                if (post.userId !== user?.uid) {
+                    showAlert("You can only edit your own posts", "error");
+                    router.back();
+                    return;
+                }
+
+                setOriginalPost(post);
+                setFormState({
+                    title: post.title || '',
+                    description: post.description || ''
+                });
+
+                // Set existing images if any
+                if (post.imageUrls && post.imageUrls.length > 0) {
+                    setImages(post.imageUrls);
+                }
+
+            } catch (error) {
+                console.log("Error loading post:", error);
+                showAlert("Failed to load post data", "error");
+                router.back();
+            } finally {
+                setInitialLoading(false);
+            }
+        };
+
+        loadPostData();
+    }, [id, user?.uid]);
 
     const updateFormField = useCallback((field: FormField, value: string) => {
         setFormState(prev => ({...prev, [field]: value}));
@@ -51,7 +130,23 @@ export default function CreateForum() {
         }
     }
 
+    const hasChanges = () => {
+        if (!originalPost) return false;
+        
+        return (
+            formState.title !== originalPost.title ||
+            formState.description !== originalPost.description ||
+            JSON.stringify(images) !== JSON.stringify(originalPost.imageUrls || [])
+        );
+    };
+
     const handleSubmit = async () => {
+        // Check if there are any changes
+        if (!hasChanges()) {
+            showAlert("No changes detected", "info");
+            return;
+        }
+
         // Validate inputs first
         const {isValid, errors} = validateForumForm(formState.title, formState.description);
 
@@ -62,36 +157,50 @@ export default function CreateForum() {
 
         setLoading(true);
         try {
-          await createPost(
+          await handleUpdatePost(
+            id,
             {
               title: formState.title,
               description: formState.description,
               images
             },
-            user?.uid || "", // assuming user is available from useAuthStore
+            user?.uid || "",
             (errorMsg) => {
               showAlert(errorMsg, "error");
             }
           );
           
-          showAlert("Your post has been created successfully", "success");
+          showAlert("Post anda telah berjaya dikemas kini", "success");
           
           router.back();
         } catch (error) {
           console.log("Error in handleSubmit:", error);
+          showAlert("Gagal mengemas kini post", "error");
         } finally {
           setLoading(false);
         }
-      };
+    };
+
+    // Show loading while fetching post data
+    if (initialLoading) {
+        return (
+            <LoadingScreenWithHeader
+                title="Edit post"
+                message="Sedang memuatkan post"
+                showBackButton={true}
+            />
+        );
+    }
 
     return (
         <SafeAreaView className="flex-1 bg-white">
             <Stack.Screen options={{ 
                 headerShown: true, 
-                headerTitle: "Cipta Post", 
+                headerTitle: "Edit Post", 
                 headerShadowVisible: false,
                 headerBackTitle: '',
-                headerLeft: () => BackButton()}}/>
+                headerLeft: () => BackButton()
+            }}/>
             <KeyboardAvoidingView 
                 behavior={Platform.OS === "ios" ? "padding" : "height"}
                 className="flex-1"
@@ -141,7 +250,7 @@ export default function CreateForum() {
 
                     <FormControl className="mt-6">
                         <FormControlLabelText className="text-xl text-black-900 mb-2">
-                            Gambar (Maksimum 5)
+                             Gambar (Maksimum 5)
                         </FormControlLabelText>
                         <View className="mt-2">
                             {images.length > 0 ? (
@@ -186,8 +295,16 @@ export default function CreateForum() {
                 {loading ? (
                     <CustomActivityIndicator/>
                 ) : (
-                    <Button className="bg-emerald-400 mt-10 rounded-xl h-11" onPress={handleSubmit}>
-                        <ButtonText>Post</ButtonText>
+                    <Button 
+                        className={`mt-10 rounded-xl h-11 ${
+                            hasChanges() ? 'bg-emerald-400' : 'bg-gray-300'
+                        }`} 
+                        onPress={handleSubmit}
+                        disabled={!hasChanges()}
+                    >
+                        <ButtonText className={hasChanges() ? 'text-white' : 'text-gray-500'}>
+                            Kemas Kini Post
+                        </ButtonText>
                     </Button>
                 )}
                 </VStack>
@@ -196,4 +313,3 @@ export default function CreateForum() {
         </SafeAreaView>
     );
 }
-

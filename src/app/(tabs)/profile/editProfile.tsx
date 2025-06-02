@@ -9,10 +9,14 @@ import { useAuthController } from "../../../hooks/useAuthController";
 import { useAuthStore } from "../../../store/authStore";
 import { validateUserProfileForm } from "../../../utils/formValidation";
 import CustomInputWithErrorMsg from "../../../components/custom/customInputWithErrorMsg";
+import CustomActivityIndicator from "../../../components/custom/customActivityIndicator";
 
 export default function EditProfile() {
     const [fullName, setFullName] = useState('');
     const [userName, setUserName] = useState('');
+    const [phoneNumber, setPhoneNumber] = useState('');
+    const [schoolName, setSchoolName] = useState('');
+
     // const [email, setEmail] = useState('');
     const [loading, setLoading] = useState(false);
     const [fullNameError, setFullNameError] = useState('');
@@ -26,6 +30,8 @@ export default function EditProfile() {
         if(customUserData){
             setFullName(customUserData.fullName || '');
             setUserName(customUserData.userName || '');
+            setPhoneNumber(customUserData.phoneNumber || '');
+            setSchoolName(customUserData.schoolName || '')
         }
     }, [customUserData]);
     
@@ -40,17 +46,17 @@ export default function EditProfile() {
         if(!validateForm()) return;
 
         if(!user){
-            showAlert("User not found", "error");
+            showAlert("Pengguna tidak wujud", "error");
             return;
         }
 
         setLoading(true);
         try{
-            await updateProfile(user.uid, { fullName, userName});
-            showAlert("Profile updated successfully", "success");
+            await updateProfile(user.uid, { fullName, userName, phoneNumber, schoolName});
+            showAlert("Profil berjaya dikemas kini", "success");
             router.back();
         }catch(e:any){
-            showAlert(`Error updating profile: ${e.message}`, "error");
+            showAlert(`Gagal mengemas kini profil: ${e.message}`, "error");
         }
         setLoading(false);
     }
@@ -59,7 +65,7 @@ export default function EditProfile() {
         <SafeAreaView className="flex-1 bg-white">
             <Stack.Screen options={{ 
                 headerShown: true, 
-                headerTitle: "Edit Profile", 
+                headerTitle: "Edit Profil", 
                 headerShadowVisible: false,
                 headerBackTitle: '',
                 headerLeft: () => BackButton()}}/>
@@ -73,25 +79,38 @@ export default function EditProfile() {
             >
                 <VStack className="flex-1 px-5 pb-6">
                     <CustomInputWithErrorMsg
-                        label="Full Name"
+                        label="Nama Penuh"
                         value={fullName}
-                        placeholder="Enter your full name"
+                        placeholder="Masukkan nama penuh anda"
                         onChangeText={setFullName}
                         error={fullNameError}
                         required={true}
                     />
                     <CustomInputWithErrorMsg
-                        label="Username"
+                        label="Nama Pengguna"
                         value={userName}
-                        placeholder="Enter your username"
+                        placeholder="Masukkan name pengguna anda"
                         onChangeText={setUserName}
                         error={userNameError}
+                        required={true}
+                    />
+                    <CustomInputWithErrorMsg
+                        label="Nombor Telefon"
+                        value={phoneNumber}
+                        placeholder="Masukkan nombor telefon anda"
+                        onChangeText={setPhoneNumber}
+                    />
+                    <CustomInputWithErrorMsg
+                        label="Nama Sekolah"
+                        value={schoolName}
+                        placeholder="Masukkan nama sekolah anda"
+                        onChangeText={setSchoolName}
                     />
                     {loading ? (
-                        <ActivityIndicator size={"small"} color="#0D5BC4" className="mt-8"/>
+                        <CustomActivityIndicator/>
                     ) : (
                         <Button className="bg-emerald-400 mt-10 rounded-xl h-11" onPress={handleUpdateProfile} >
-                            <ButtonText>Edit Profile</ButtonText>
+                            <ButtonText>Edit Profil</ButtonText>
                         </Button>
                     )}
                 </VStack>

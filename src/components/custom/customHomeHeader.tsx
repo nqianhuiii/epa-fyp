@@ -25,7 +25,7 @@ export default function CustomHomeHeader(){
                     />
                 </Avatar>  
                 <VStack>
-                    <Text size="sm">Good Morning</Text>
+                    <Text size="sm">Selamat Pagi</Text>
                     <Heading size="sm">{customUserData?.userName}</Heading>
                 </VStack>           
             </HStack>

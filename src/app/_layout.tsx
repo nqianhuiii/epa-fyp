@@ -1,10 +1,11 @@
 import "@/global.css";
 import { Stack, router } from "expo-router";
-import { ActivityIndicator, View } from "react-native";
+import { View } from "react-native";
 import { GluestackUIProvider } from "../components/ui/gluestack-ui-provider";
 import { useAuth } from "../hooks/useAuth";
 import { useAuthStore } from "../store/authStore";
 import { useEffect } from "react";
+import CustomActivityIndicator from "../components/custom/customActivityIndicator";
 
 export default function Layout() {
   const initializing = useAuth();
@@ -22,7 +23,7 @@ export default function Layout() {
   if (initializing) {
     return (
       <View className="flex-1 items-center justify-center">
-        <ActivityIndicator size="small"/>
+        <CustomActivityIndicator/>
       </View>
     )
   }

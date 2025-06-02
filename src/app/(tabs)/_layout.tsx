@@ -21,7 +21,7 @@ export default function _layout (){
             <Tabs.Screen 
                 name="index" 
                 options={{
-                    title:'Home', 
+                    title:'Laman Utama', 
                     header: () => <CustomHomeHeader/>,
                     tabBarIcon: ({color}) => <FontAwesome size={28} name="home" color={color}/>
                 }}
@@ -30,7 +30,7 @@ export default function _layout (){
             <Tabs.Screen
                 name="chatbot"
                 options={{
-                    title:'Chat Bot', 
+                    title:'Chatbot', 
                     tabBarIcon: ({color}) => <FontAwesome size={28} name="headphones" color={color}/>
                 }}
             />
@@ -45,7 +45,7 @@ export default function _layout (){
             <Tabs.Screen
                 name="profile"
                 options={{
-                    title: 'Profile', 
+                    title: 'Profil', 
                     headerShown: false,
                     tabBarIcon: ({color}) => <FontAwesome size={28} name="user" color={color}/>
                 }}

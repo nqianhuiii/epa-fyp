@@ -1,9 +1,11 @@
 import { Ionicons } from "@expo/vector-icons";
+import { useFocusEffect } from '@react-navigation/native';
 import { router, Stack, useNavigation } from "expo-router";
-import { useEffect, useLayoutEffect, useState } from "react";
+import React, { useLayoutEffect, useState } from "react";
 import { ActivityIndicator, ScrollView, TouchableOpacity, View } from "react-native";
-import { HeaderRightButton } from "../../../components/custom/headerRightButton";
+import { useForumTabStore } from "../../..//store/forumTabStore";
 import { HeaderLeftButton } from "../../../components/custom/headerLeftButton";
+import { HeaderRightButton } from "../../../components/custom/headerRightButton";
 import PostCard from "../../../components/custom/postCard";
 import { Button, ButtonText } from "../../../components/ui/button";
 import { HStack } from "../../../components/ui/hstack";
@@ -13,9 +15,7 @@ import { usePostActionSelection } from "../../../hooks/usePostActionSelection";
 import { getCommentsByPostId } from "../../../services/forumService";
 import { useAuthStore } from "../../../store/authStore";
 import { useForumStore } from "../../../store/forumStore";
-import { useForumTabStore } from "../../..//store/forumTabStore";
-import { useFocusEffect } from '@react-navigation/native';
-import React from "react";
+import CustomActivityIndicator from "../../../components/custom/customActivityIndicator";
 
 export default function ForumScreen() {
   const [activeTab, setActiveTab] = useState("all");
@@ -73,7 +73,7 @@ export default function ForumScreen() {
       setPosts(data);
       loadCommentsForPosts(data); // load post first, then comments
     } catch (error) {
-      console.error("Failed to load posts:", error);
+      console.error("Gagal memuatkan post", error);
     } finally {
       setIsLoading(false);
     }
@@ -87,13 +87,13 @@ export default function ForumScreen() {
             const comments = await getCommentsByPostId(post.id);
             updatePostComments(post.id, comments);
           } catch (error) {
-            console.error(`Failed to load comments for post ${post.id}:`, error);
+            console.error(`Gagal memuatkan komen untuk post ${post.id}:`, error);
             updatePostComments(post.id, []);
           }
         })
       );
     } catch (error) {
-      console.error("Failed to load comments for posts:", error);
+      console.error("Gagal memuatkan komen untuk post:", error);
     }
   };
 
@@ -123,7 +123,7 @@ export default function ForumScreen() {
           })
         );
       } catch (error) {
-        console.error("Error handling like:", error);
+        console.error("Gagal memuatkan data suka", error);
       }
     }
   };
@@ -133,7 +133,7 @@ export default function ForumScreen() {
       <Stack.Screen
         options={{
           headerShown: true,
-          headerTitle: selectedPost ? "Post Actions" : "Forum",
+          headerTitle: selectedPost ? "Tindakan Post" : "Forum",
           headerShadowVisible: false,
           headerStyle: {
             backgroundColor: "white",
@@ -160,7 +160,7 @@ export default function ForumScreen() {
                 activeTab === "all" ? "text-white" : "text-emerald-400"
               }
             >
-              All Post
+              Semua Post
             </ButtonText>
           </Button>
           <Button
@@ -180,7 +180,7 @@ export default function ForumScreen() {
                 activeTab === "my" ? "text-white" : "text-emerald-400"
               }
             >
-              My Post
+              Post Saya
             </ButtonText>
           </Button>
         </HStack>
@@ -188,7 +188,7 @@ export default function ForumScreen() {
 
       {isLoading ? (
         <View className="flex-1 justify-center items-center">
-          <ActivityIndicator size="small" color="#10B981" />
+          <CustomActivityIndicator/>
         </View>
       ) : (
         <ScrollView
@@ -199,8 +199,8 @@ export default function ForumScreen() {
             <View className="flex-1 justify-center items-center p-8">
               <Text className="text-gray-500 text-center text-lg">
                 {activeTab === "all"
-                  ? "No post available"
-                  : "You have not created any post yet"}
+                  ? "Tiada post tersedia"
+                  : "Anda belum mencipta sebarang post"}
               </Text>
             </View>
           ) : (

@@ -1,8 +1,8 @@
 import { Ionicons } from "@expo/vector-icons";
 import { formatDistanceToNow } from 'date-fns';
-import { router, Stack, useLocalSearchParams } from "expo-router";
-import { useEffect, useRef, useState } from "react";
-import { ActivityIndicator, Keyboard, KeyboardAvoidingView, Platform, ScrollView, TextInput, TouchableOpacity, View } from "react-native";
+import { router, Stack, useFocusEffect, useLocalSearchParams } from "expo-router";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { Keyboard, KeyboardAvoidingView, Platform, ScrollView, TextInput, TouchableOpacity, View } from "react-native";
 import { useForumTabStore } from "../../..//store/forumTabStore";
 import BackButton from "../../../components/custom/customBackButton";
 import { usePostActionSheet } from "../../../components/custom/postActionSheet";
@@ -14,6 +14,7 @@ import { VStack } from "../../../components/ui/vstack";
 import { useForumController } from "../../../hooks/useForumController";
 import { useAuthStore } from "../../../store/authStore";
 import { useForumStore } from "../../../store/forumStore";
+import CustomActivityIndicator from "../../../components/custom/customActivityIndicator";
 
 export default function ForumDetailScreen() {
   const { id } = useLocalSearchParams();
@@ -32,6 +33,12 @@ export default function ForumDetailScreen() {
   const inputRef = useRef<TextInput>(null);
   const scrollViewRef = useRef<ScrollView>(null);
   const { forumActionSheet, onOpen } = usePostActionSheet();
+
+  useFocusEffect(
+  useCallback(() => {
+    loadPostDetails();
+  }, [postId])
+);
 
   useEffect(() => {
     loadPostDetails();
@@ -139,7 +146,7 @@ export default function ForumDetailScreen() {
   if (isLoading) {
     return (
       <View className="flex-1 justify-center items-center bg-gray-50">
-        <ActivityIndicator size="small" color="#10B981" />
+        <CustomActivityIndicator/>
       </View>
     );
   }
@@ -196,12 +203,12 @@ export default function ForumDetailScreen() {
 
           <View className="mt-2 bg-white h-full">
             <View className="px-5 py-3 border-b border-gray-200">
-              <Text className="font-bold text-lg">Comments ({comments.length})</Text>
+              <Text className="font-bold text-lg">Komen ({comments.length})</Text>
             </View>
 
             {comments.length === 0 ? (
               <View className="py-8 items-center">
-                <Text className="text-gray-500">No comments yet. Be the first to comment!</Text>
+                <Text className="text-gray-500">Tiada komen lagi. Jadilah yang pertama untuk komen!</Text>
               </View>
             ) : (
               comments.map(comment =>
@@ -223,7 +230,7 @@ export default function ForumDetailScreen() {
               <TextInput
                 ref={inputRef}
                 className="flex-1"
-                placeholder="Write a comment..."
+                placeholder="Tulis komen ..."
                 value={newComment}
                 onChangeText={setNewComment}
                 multiline

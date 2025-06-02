@@ -14,7 +14,7 @@ export default function Profile(){
   
     return (
       <SafeAreaView className="flex-1 bg-white">
-        <Stack.Screen options={{ headerShown: true, headerTitle: "Profile"}}/>
+        <Stack.Screen options={{ headerShown: true, headerTitle: "Profil"}}/>
         <View className="px-5 py-3">
           <View className="bg-white rounded-xl px-5 py-5">
             <HStack className="justify-between">
@@ -39,10 +39,10 @@ export default function Profile(){
         </View>
         <View className="w-full mb-3 px-5">    
           <Button className="bg-emerald-400 rounded-xl h-11 mb-3" onPress= {() => router.push('/(tabs)/profile/editProfile')}> 
-            <ButtonText>Edit Profile</ButtonText>
+            <ButtonText>Edit Profil</ButtonText>
           </Button>
           <Button className="border border-emerald-400 bg-white rounded-xl h-11" onPress={() => auth.signOut()}>
-            <ButtonText className="text-emerald-400">Sign Out</ButtonText>
+            <ButtonText className="text-emerald-400">Log Keluar</ButtonText>
           </Button> 
         </View>
       </SafeAreaView>

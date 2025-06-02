@@ -1,6 +1,6 @@
 import { useRouter } from "expo-router";
 import { JSX, RefAttributes, useState } from "react";
-import { ActivityIndicator, ColorValue, KeyboardAvoidingView, Platform, SafeAreaView } from "react-native";
+import { ColorValue, KeyboardAvoidingView, Platform, SafeAreaView } from "react-native";
 import { Alert, AlertIcon, AlertText } from "../../components/ui/alert";
 import { Button, ButtonText } from "../../components/ui/button";
 import { FormControl, FormControlLabelText } from "../../components/ui/form-control";
@@ -11,6 +11,7 @@ import { Text } from "../../components/ui/text";
 import { VStack } from "../../components/ui/vstack";
 import { useAuthController } from "../../hooks/useAuthController";
 import { Ionicons } from '@expo/vector-icons';
+import CustomActivityIndicator from "../../components/custom/customActivityIndicator";
 
 export default function SignIn(){
     const [email, setEmail] = useState('');
@@ -104,7 +105,7 @@ export default function SignIn(){
               </Input>
 
               {loading ? (
-                <ActivityIndicator size={"small"} color="#0D5BC4" className="mt-8"/>
+                <CustomActivityIndicator/>
               ) : (
                 <>
                   <Button className="bg-emerald-400 mt-8 rounded-xl h-11" onPress={handleSignIn}>
