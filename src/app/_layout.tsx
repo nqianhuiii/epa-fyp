@@ -6,6 +6,7 @@ import { useAuth } from "../hooks/useAuth";
 import { useAuthStore } from "../store/authStore";
 import { useEffect } from "react";
 import CustomActivityIndicator from "../components/custom/customActivityIndicator";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 export default function Layout() {
   const initializing = useAuth();
@@ -22,17 +23,21 @@ export default function Layout() {
 
   if (initializing) {
     return (
-      <View className="flex-1 items-center justify-center">
-        <CustomActivityIndicator/>
-      </View>
+      <GestureHandlerRootView>
+        <View className="flex-1 items-center justify-center">
+          <CustomActivityIndicator/>
+        </View>
+      </GestureHandlerRootView>
     )
   }
 
   return (
-    <GluestackUIProvider mode="light">
-      <View className="flex-1 bg-white">
-        <Stack screenOptions={{ headerShown: false }}/>
-      </View>
-    </GluestackUIProvider>
+    <GestureHandlerRootView>
+      <GluestackUIProvider mode="light">
+        <View className="flex-1 bg-white">
+          <Stack screenOptions={{ headerShown: false }}/>
+        </View>
+      </GluestackUIProvider>
+    </GestureHandlerRootView>
   );
 }

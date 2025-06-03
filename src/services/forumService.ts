@@ -1,6 +1,6 @@
-import { addDoc, arrayRemove, arrayUnion, collection, doc, getDoc, getDocs, orderBy, query, serverTimestamp, setDoc, updateDoc, where } from "firebase/firestore";
+import { addDoc, arrayRemove, arrayUnion, collection, deleteDoc, doc, getDoc, getDocs, orderBy, query, serverTimestamp, setDoc, updateDoc, where } from "firebase/firestore";
 import { db } from "../config/firebaseConfig";
-import { ForumComment } from '../store/forumStore';
+import { ForumComment, Post } from '../store/forumStore';
 import { getUsernameById } from "./userService";
 
 export interface PostData{
@@ -66,17 +66,21 @@ export const createPostDocument = async (
     }
   ) => {
     try{
+      //extract the imageUrls from postData
+      const { imageUrls, ...restPostData } = postData;
+
       const postRef = doc(collection(db, "posts"));
 
       await setDoc(postRef, {
-        ...postData,
+        ...restPostData,
         userId,
         updatedAt: new Date(),
+        ...(Array.isArray(imageUrls) ? { imageUrls} : {}), // only add to db if exists
       });
 
       return postRef.id;
     }catch(error){
-      console.error('Error creating post document:', error);
+      console.log('Error creating post document:', error);
       throw new Error('Failed to create post');
     }
   };
@@ -212,7 +216,7 @@ export const addCommentToPost = async (
 };
 
 // get post by the post id (the user clicked)
-export const getPostById = async (postId: string) => {
+export const getPostById = async (postId: string): Promise<Post> => {
   try {
     const postRef = doc(db, 'posts', postId);
     const postSnap = await getDoc(postRef);
@@ -221,7 +225,7 @@ export const getPostById = async (postId: string) => {
       throw new Error("Post not found");
     }
 
-    const data = postSnap.data();
+    const data = postSnap.data() as Omit<Post, 'id'|'username'>;
     const username = await getUsernameById(data.userId);
 
     return {
@@ -280,3 +284,32 @@ export const addComment = async (postId: string, commentData: {
     throw new Error("Failed to add comment");
   }
 };
+
+export const deletePost = async (postId: string) => {
+  try {
+    const postRef = doc(db, 'posts', postId);
+    await deleteDoc(postRef);
+  }catch (error){
+    console.error("Error delete post:", error);
+    throw new Error("Failed to delete post");
+  }
+}
+
+export const updatePostService = async (
+  postId: string,
+  postData: {
+      title: string;
+      description: string;
+      imageUrls?: string[];
+      updatedAt?: Date;
+    }
+) => {
+  const postRef = doc(db, 'posts', postId);
+
+  await updateDoc(postRef, {
+    ...postData, 
+    updatedAt: new Date()
+  })
+
+}
+

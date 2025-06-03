@@ -4,6 +4,8 @@ import {create} from 'zustand';
 interface CustomUserData {
     fullName: string;
     userName: string;
+    phoneNumber?: string;
+    schoolName?: string;
 }
 
 interface AuthState {

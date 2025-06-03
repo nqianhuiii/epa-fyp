@@ -25,8 +25,8 @@ const DeleteConfirmationDialog: React.FC<Props> = ({
   isOpen,
   onClose,
   onConfirm,
-  title = "Delete Post?",
-  message = "This post will be permanently deleted. This action cannot be undone."
+  title = "Padam Post?",
+  message = "Post ini akan dipadam secara kekal. Tindakan ini tidak boleh diundur."
 }) => {
   return (
     <AlertDialog isOpen={isOpen} onClose={onClose}>
@@ -48,7 +48,7 @@ const DeleteConfirmationDialog: React.FC<Props> = ({
             onPress={onConfirm}
             className="px-[30px]"
           >
-            <ButtonText>Delete</ButtonText>
+            <ButtonText>Padam</ButtonText>
           </Button>
           <Button
             variant="outline"
@@ -57,7 +57,7 @@ const DeleteConfirmationDialog: React.FC<Props> = ({
             size="sm"
             className="px-[30px]"
           >
-            <ButtonText>Cancel</ButtonText>
+            <ButtonText>Batal</ButtonText>
           </Button>
         </AlertDialogFooter>
       </AlertDialogContent>

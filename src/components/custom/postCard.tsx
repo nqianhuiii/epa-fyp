@@ -140,12 +140,12 @@ const PostCard: React.FC<PostCardProps> = ({
             size={20}
             color={isLiked ? "#10B981" : "#4B5563"}
           />
-          <Text className="ml-2">{post.likedBy?.length || 0} Likes</Text>
+          <Text className="ml-2">{post.likedBy?.length || 0} Suka</Text>
         </TouchableOpacity>
 
         <TouchableOpacity className="flex-row items-center">
           <Ionicons name="chatbubble-outline" size={20} color="#4B5563" />
-          <Text className="ml-2">{commentCount} Comments</Text>
+          <Text className="ml-2">{commentCount} Komen</Text>
         </TouchableOpacity>
       </View>
     </View>

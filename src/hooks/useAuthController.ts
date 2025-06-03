@@ -100,7 +100,7 @@ export const useAuthController = () => {
         })
     }
 
-    const updateProfile = async(userId: string, profileData: {fullName: string, userName: string}) => {
+    const updateProfile = async(userId: string, profileData: {fullName: string, userName: string, phoneNumber: string, schoolName: string}) => {
         try{
             // update profile in firestore
             await updateUserAccount(userId, profileData);
@@ -113,6 +113,8 @@ export const useAuthController = () => {
                     {
                         fullName: profileData.fullName,
                         userName: profileData.userName,
+                        schoolName: profileData.schoolName ?? '',
+                        phoneNumber: profileData.phoneNumber ?? '',
                     }   
                 );
             }

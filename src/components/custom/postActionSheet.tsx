@@ -1,12 +1,12 @@
 import { Ionicons } from '@expo/vector-icons';
+import { router } from "expo-router";
 import React, { useState } from "react";
 import { View } from "react-native";
-import { router, Stack } from "expo-router";
 import { useAlert } from "../../components/custom/alertProvider";
 import { useForumController } from "../../hooks/useForumController";
+import { usePostActionSelection } from "../../hooks/usePostActionSelection";
 import { Actionsheet, ActionsheetBackdrop, ActionsheetContent, ActionsheetDragIndicator, ActionsheetDragIndicatorWrapper, ActionsheetItem, ActionsheetItemText } from "../ui/actionsheet";
 import DeleteConfirmationDialog from './deleteConfirmationDialog';
-import { usePostActionSelection } from "../../hooks/usePostActionSelection";
 
 export const usePostActionSheet = () => {
         const [isOpen, setIsOpen] = useState(false);
@@ -44,6 +44,16 @@ export const usePostActionSheet = () => {
           }
         }
 
+        const handleEditPost = () => {
+          if (currentPostId) {
+            router.push({
+              pathname: '/forum/editForum/[id]',
+              params: { id: currentPostId },
+            });
+          }
+          onClose();
+        }
+
         const forumActionSheet = () => (
           <>
               <Actionsheet isOpen={isOpen} onClose={onClose}>
@@ -53,11 +63,11 @@ export const usePostActionSheet = () => {
                     <ActionsheetDragIndicator />
                   </ActionsheetDragIndicatorWrapper>
 
-                  <ActionsheetItem onPress={onClose}>
+                  <ActionsheetItem onPress={handleEditPost}>
                     <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
                         <Ionicons name="create-outline" size={24}/>
                       <ActionsheetItemText size="lg">
-                        Edit Post
+                        Kemas Kini Post
                        </ActionsheetItemText>
                     </View>                  
                 </ActionsheetItem>
@@ -66,7 +76,7 @@ export const usePostActionSheet = () => {
                     <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
                         <Ionicons name="trash-outline" size={24} color="#EF4444"  />
                         <ActionsheetItemText size="lg" >
-                          Delete Post
+                          Padam Post
                         </ActionsheetItemText>
                     </View>                 
                     </ActionsheetItem>

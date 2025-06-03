@@ -39,5 +39,5 @@ export const useImagePicker = (maxImages = 5) => {
         setImages(newImages);
     }
 
-    return { images, pickImages, removeImage };
+    return { images, pickImages, removeImage, setImages};
 }

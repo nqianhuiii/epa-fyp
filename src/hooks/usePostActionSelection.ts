@@ -1,14 +1,17 @@
 import { useState } from "react";
-import { Alert } from "react-native";
+import { useForumController } from "./useForumController";
+import { router } from "expo-router";
 
 export const usePostActionSelection = (
-  activeTab: string,
-  setPosts: React.Dispatch<React.SetStateAction<any[]>>
+  activeTab?: string,
+  setPosts?: React.Dispatch<React.SetStateAction<any[]>>
 ) => {
   const [selectedPost, setSelectedPost] = useState<string | null>(null);
-
+  const { handleDeletePost } = useForumController();
+  const [showConfirmDialog, setShowConfirmDialog] = useState(false);
+ 
   const handleLongPress = (postId: string) => {
-    if (activeTab === "my") {
+    if (!activeTab || activeTab === "my") {
       setSelectedPost(postId);
     }
   };
@@ -18,44 +21,40 @@ export const usePostActionSelection = (
   };
 
   const handleEditPost = (postId: string) => {
-    // router.push({ pathname: "/(tabs)/forum/editForum", params: { postId } });
+    router.push(`/(tabs)/forum/editForum/${postId}`);
     setSelectedPost(null);
   };
 
-  const handleDeletePost = (postId: string) => {
-    // Alert.alert(
-    //   "Delete Post",
-    //   "Are you sure you want to delete this post? This action cannot be undone.",
-    //   [
-    //     { text: "Cancel", style: "cancel" },
-    //     {
-    //       text: "Delete",
-    //       style: "destructive",
-    //       onPress: async () => {
-    //         try {
-    //           // await deletePost(postId); // Uncomment when deletePost service is available
-    //           setPosts((prev) => prev.filter((post) => post.id !== postId));
-    //           setSelectedPost(null);
-    //         } catch (error) {
-    //           console.error("Error deleting post:", error);
-    //           Alert.alert("Error", "Failed to delete post. Please try again.");
-    //         }
-    //       },
-    //     },
-    //   ]
-    // );
-    // setSelectedPost(null);
+  const openDeleteDialog = (postId: string) => {
+    setSelectedPost(postId);
+    setShowConfirmDialog(true); 
+    console.log("thsi is open");
   };
 
+  const confirmDelete = async () => {
+    if (selectedPost) {
+      await handleDeletePost(selectedPost);
+      setSelectedPost(null);
+      setShowConfirmDialog(false);
+
+      // Optional: filter out deleted post from UI
+      if (setPosts) {
+        setPosts((prevPosts) => prevPosts.filter(post => post.id !== selectedPost));
+      }
+    }
+  };
 
   return {
     selectedPost,
     handleLongPress,
     cancelSelection,
     handleEditPost,
-    handleDeletePost,
+    confirmDelete,
+    openDeleteDialog,
+    showConfirmDialog,
+    setShowConfirmDialog
   };
+  
 };
-
 
 

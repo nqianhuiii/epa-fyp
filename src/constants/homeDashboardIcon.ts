@@ -4,6 +4,8 @@ import Exam from "../../assets/images/dashboard-icon/exam.png";
 import Flashcard from "../../assets/images/dashboard-icon/flash-card.png";
 import Notes from "../../assets/images/dashboard-icon/notes.png";
 import Quiz from "../../assets/images/dashboard-icon/quiz.png";
+import Workshop from "../../assets/images/dashboard-icon/workshop.png"
+import { router } from "expo-router";
 
 interface IconItem {
     id: number,
@@ -13,10 +15,11 @@ interface IconItem {
 }
 
 export const dashboardIcon: IconItem [] = [
-    {id: 1, label: "Text Book", image: Book, onPress: () => console.log("This is textbook")},
-    {id: 2, label: "Notes", image: Notes, onPress: () => console.log("This is note")},
-    {id: 3, label: "Past Year", image: Exam, onPress: () => console.log("This is past year")},
-    {id: 4, label: "Quiz", image: Quiz, onPress: () => console.log("This is quiz")},
-    {id: 5, label: "Flashcard", image: Flashcard, onPress: () => console.log("This is flashcard")},
+    {id: 1, label: "Buku Teks", image: Book, onPress: () => router.push('/screens/textbook/TextbookListScreen')},
+    {id: 2, label: "Nota", image: Notes, onPress: () => console.log("This is note")},
+    {id: 3, label: "Soalan", image: Exam, onPress: () => console.log("This is past year")},
+    {id: 4, label: "Sesi Belajar", image: Workshop, onPress: () => console.log("This is past year")},
+    {id: 5, label: "Kuiz", image: Quiz, onPress: () => console.log("This is quiz")},
+    {id: 6, label: "Kad Imbasan", image: Flashcard, onPress: () => console.log("This is flashcard")},
 ]
 
