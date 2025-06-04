@@ -16,9 +16,9 @@ interface IconItem {
 
 export const dashboardIcon: IconItem [] = [
     {id: 1, label: "Buku Teks", image: Book, onPress: () => router.push('/screens/textbook/TextbookListScreen')},
-    {id: 2, label: "Nota", image: Notes, onPress: () => console.log("This is note")},
-    {id: 3, label: "Soalan", image: Exam, onPress: () => console.log("This is past year")},
-    {id: 4, label: "Sesi Belajar", image: Workshop, onPress: () => console.log("This is past year")},
+    {id: 2, label: "Nota", image: Notes, onPress: () => router.push('/screens/notes/NotesListScreen')},
+    {id: 3, label: "Soalan", image: Exam, onPress: () => router.push('/screens/exercises/ExercisesListScreen')},
+    {id: 4, label: "Sesi Belajar", image: Workshop, onPress: () => router.push('/screens/studySessions/sessionsListScreen')},
     {id: 5, label: "Kuiz", image: Quiz, onPress: () => console.log("This is quiz")},
     {id: 6, label: "Kad Imbasan", image: Flashcard, onPress: () => console.log("This is flashcard")},
 ]

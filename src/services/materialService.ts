@@ -1,6 +1,6 @@
-import { collection, getDocs, doc, getDoc, query, orderBy} from 'firebase/firestore';
+import { collection, doc, getDoc, getDocs, orderBy, query, where } from 'firebase/firestore';
 import { db } from '../config/firebaseConfig';
-import { Textbook } from '../types/ResourceType';
+import { Exercise, Notes, Textbook } from '../types/ResourceType';
 
 export class TextbookService {
   private collectionName = 'textbooks';
@@ -57,6 +57,127 @@ export class TextbookService {
     } catch (error) {
       console.error('Error fetching textbook:', error);
       throw new Error('Failed to fetch textbook');
+    }
+  }
+}
+
+export class NotesService {
+
+  async getAllNotes(): Promise<Notes[]> {
+    try {
+      const q = query(
+        collection(db, 'notes'),
+        orderBy('title', 'asc')
+      );
+      
+      const querySnapshot = await getDocs(q);
+      const notes: Notes[] = [];
+
+      querySnapshot.forEach((doc) => {
+        const data = doc.data();
+        notes.push({
+          id: doc.id,
+          fileName: data.fileName || '',
+          pdfUrl: data.pdfUrl || '',
+          title: data.title || '',
+          chapter: data.chapter || ''
+        });
+      });
+
+      return notes;
+    } catch (error) {
+      console.error('Error fetching notes:', error);
+      throw new Error('Failed to fetch notes');
+    }
+  }
+
+  async getNotesById(id: string): Promise<Notes | null> {
+    try {
+      const docRef = doc(db, 'notes', id);
+      const docSnap = await getDoc(docRef);
+
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+        return {
+          id: docSnap.id,
+          fileName: data.fileName || '',
+          pdfUrl: data.pdfUrl || '',
+          title: data.title || '',
+          chapter: data.chapter || ''
+        };
+      }
+
+      return null;
+    } catch (error) {
+      console.error('Error fetching notes:', error);
+      throw new Error('Failed to fetch notes');
+    }
+  }
+}
+
+export class ExerciseService {
+
+
+  async getAllExercise(typeFilter?: string): Promise<Exercise[]> {
+    try {
+      let q = query(
+        collection(db, 'exercises'),
+        orderBy('title', 'asc')
+      );
+
+      // Add type filter if provided
+      if (typeFilter && typeFilter !== 'all') {
+        q = query(
+          collection(db, 'exercises'),
+          where('type', '==', typeFilter),
+          orderBy('title', 'asc')
+        );
+      }
+      
+      const querySnapshot = await getDocs(q);
+      const exercise: Exercise[] = [];
+
+      querySnapshot.forEach((doc) => {
+        const data = doc.data();
+        exercise.push({
+          id: doc.id,
+          fileName: data.fileName || '',
+          pdfUrl: data.pdfUrl || '',
+          title: data.title || '',
+          chapter: data.chapter || '',
+          type: data.type || ''
+        });
+      });
+
+      return exercise;
+    } catch (error) {
+      console.error('Error fetching exercise:', error);
+      throw new Error('Failed to fetch exercise');
+    }
+  }
+
+
+  async getExerciseById(id: string): Promise<Exercise | null> {
+    try {
+      const docRef = doc(db, 'exercises', id);
+      const docSnap = await getDoc(docRef);
+
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+        return {
+          id: docSnap.id,
+          fileName: data.fileName || '',
+          pdfUrl: data.pdfUrl || '',
+          title: data.title || '',
+          chapter: data.chapter || '',
+          type: data.type || ''
+        };
+      }
+
+      return null;
+    } catch (error) {
+      console.error('Error fetching exercise:', error);
+      throw new Error('Failed to fetch exercise');
     }
   }
 }
