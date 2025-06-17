@@ -20,6 +20,7 @@ export const fetchStudySessions = async(): Promise<StudySession[]> => {
           teacherName: data.teacherName || '',
           teacherImage: data.teacherImage || null,
           date: data.date || '',
+          time: data.time || '',
           description: data.description || '',
           meetingLink: data.meetingLink || null,
           createdAt: data.createdAt?.toDate?.()?.toISOString() || data.createdAt || '',

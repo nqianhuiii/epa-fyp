@@ -17,6 +17,7 @@ import { useAuthStore } from "../../../../store/authStore";
 import { validateForumForm } from "../../../../utils/formValidation";
 import LoadingScreenWithHeader from "../../../../components/custom/loadingScreenWithHeader";
 import CustomActivityIndicator from "../../../../components/custom/customActivityIndicator";
+import { window } from "@/constants/sizes";
 
 type FormField = 'title' | 'description';
 interface FormErrors {
@@ -122,7 +123,6 @@ export default function EditForum() {
 
     const handleImageUpload = async() => {
         const result = await pickImages(); 
-
         if(!result.success && result.error === 'limit'){
             showAlert("You can select only up to 5 images", "error");
         }else if(!result.success && result.error === 'permission'){

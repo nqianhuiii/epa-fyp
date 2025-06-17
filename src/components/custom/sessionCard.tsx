@@ -1,7 +1,7 @@
 // components/SessionCard.tsx
 
 import { Ionicons } from '@expo/vector-icons';
-import { Image, Text, TouchableOpacity, View, Linking, Alert } from 'react-native';
+import { Alert, Image, Linking, Text, TouchableOpacity, View } from 'react-native';
 import { Card } from '../../components/ui/card';
 import { StudySessionCardProps } from '../../types/SessionType';
 
@@ -29,7 +29,8 @@ const SessionCard: React.FC<StudySessionCardProps> = ({ session }) => {
   };
 
   return (
-    <Card className="mb-4 mx-4 bg-white rounded-xl shadow-sm p-6">
+    <Card className="mb-4 mx-4 bg-white  border-t-4 border-purple-500 rounded-xl shadow-sm p-6">
+
       <Text className="text-lg font-semibold text-gray-800 mb-2" numberOfLines={2}>
         {session.title}
       </Text>
@@ -68,18 +69,18 @@ const SessionCard: React.FC<StudySessionCardProps> = ({ session }) => {
 
        <View className="flex-row items-center mb-4">
         <Ionicons name="time" size={16} color="#059669" />
-        <Text className="text-sm text-gray-700 ml-2">{session.date}</Text>
+        <Text className="text-sm text-gray-700 ml-2">{session.time}</Text>
       </View>
 
 
       {/* Meeting Button */}
       {session.meetingLink && (
         <TouchableOpacity
-          className="bg-emerald-500 flex-row items-center justify-center py-3 px-4 rounded-lg"
+          className="bg-emerald-500 flex-row items-center justify-center py-3 px-4 rounded-xl"
           onPress={handleMeetingPress}
         >
           <Ionicons name="videocam" size={16} color="white" />
-          <Text className="text-white text-sm font-medium mx-2">Join Meeting</Text>
+          <Text className="text-white text-sm font-medium mx-2">Serta Sesi</Text>
         </TouchableOpacity>
       )}
     </Card>

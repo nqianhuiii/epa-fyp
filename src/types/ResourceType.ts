@@ -82,3 +82,4 @@ export interface ExerciseListProps {
   onRefresh?: () => void;
   onExercisePress: (exercise: Exercise) => void;
 }
+

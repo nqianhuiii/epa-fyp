@@ -4,6 +4,7 @@ export interface StudySession {
   teacherName: string;
   teacherImage?: string;
   date: string;
+  time: string;
   description: string;
   meetingLink: string | null;
   createdAt: string;

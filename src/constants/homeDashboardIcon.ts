@@ -19,7 +19,7 @@ export const dashboardIcon: IconItem [] = [
     {id: 2, label: "Nota", image: Notes, onPress: () => router.push('/screens/notes/NotesListScreen')},
     {id: 3, label: "Soalan", image: Exam, onPress: () => router.push('/screens/exercises/ExercisesListScreen')},
     {id: 4, label: "Sesi Belajar", image: Workshop, onPress: () => router.push('/screens/studySessions/sessionsListScreen')},
-    {id: 5, label: "Kuiz", image: Quiz, onPress: () => console.log("This is quiz")},
+    {id: 5, label: "Kuiz", image: Quiz, onPress: () => router.push('/screens/quiz/QuizListScreen')},
     {id: 6, label: "Kad Imbasan", image: Flashcard, onPress: () => console.log("This is flashcard")},
 ]
 

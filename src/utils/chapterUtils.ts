@@ -30,15 +30,9 @@ export const CHAPTER_CONFIG: ChapterConfig[] = [
   {
     id: 4,
     shortName: 'Bab 4',
-    fullName: 'Bab 4: Pengaturcaraan',
-    keywords: ['bab 4', 'pengaturcaraan', 'programming']
+    fullName: 'Bab 4: Kod Arahan',
+    keywords: ['bab 4', 'kod', 'arahan']
   },
-  {
-    id: 5,
-    shortName: 'Bab 5',
-    fullName: 'Bab 5: Sistem Maklumat',
-    keywords: ['bab 5', 'sistem maklumat', 'information system']
-  }
 ];
 
 /**
