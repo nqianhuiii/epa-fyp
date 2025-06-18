@@ -30,9 +30,11 @@ export const CountdownScreen: React.FC<CountdownScreenProps> = ({
         <View className="flex-1 items-center justify-center px-6">
                 {/* Top Section */}
                 <View className="items-center mb-12">
-                <Text className="text-emerald-400 text-2xl font-bold mb-2">
-                    {quizTitle || 'Kuiz'}
-                </Text>
+                    <View className="px-6 items-center">
+                    <Text className="text-emerald-500 text-3xl font-bold mb-2 text-center">
+                        {quizTitle || 'Kuiz'}
+                    </Text>
+                    </View>
                 <Text className="text-gray-600 text-base text-center">
                     Kuiz akan bermula dalam
                 </Text>

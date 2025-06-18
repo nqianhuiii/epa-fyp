@@ -2,8 +2,8 @@
 
 import { Ionicons } from '@expo/vector-icons';
 import { Text, TouchableOpacity, View } from 'react-native';
-import { Card } from '../../components/ui/card';
-import { QuizCardProps } from '../../types/QuizType';
+import { Card } from '../../ui/card';
+import { QuizCardProps } from '../../../types/QuizType';
 
 const QuizCard: React.FC<QuizCardProps> = ({ quiz, onPress }) => {
   const getDifficultyInfo = (questionCount: number) => {
@@ -16,7 +16,7 @@ const QuizCard: React.FC<QuizCardProps> = ({ quiz, onPress }) => {
 
   return (
     <TouchableOpacity onPress={() => onPress(quiz)} activeOpacity={0.7}>
-      <Card className="mb-4 mx-4 bg-white border-t-4 border-blue-500 rounded-xl shadow-sm">
+      <Card className="mb-4 mx-4 bg-white border-t-8 border-blue-500 rounded-xl shadow-sm">
         {/* Emerald Top Border */}
         
         <View className="p-4">

@@ -29,7 +29,7 @@ const SessionCard: React.FC<StudySessionCardProps> = ({ session }) => {
   };
 
   return (
-    <Card className="mb-4 mx-4 bg-white  border-t-4 border-purple-500 rounded-xl shadow-sm p-6">
+    <Card className="mb-4 mx-4 bg-white  border-t-8 border-cyan-500 rounded-xl shadow-sm p-6">
 
       <Text className="text-lg font-semibold text-gray-800 mb-2" numberOfLines={2}>
         {session.title}
@@ -62,7 +62,7 @@ const SessionCard: React.FC<StudySessionCardProps> = ({ session }) => {
         </Text>
       )}
 
-      <View className="flex-row items-center mb-2">
+      {/* <View className="flex-row items-center mb-2">
         <Ionicons name="calendar" size={16} color="#059669" />
         <Text className="text-sm text-gray-700 ml-2">{session.date}</Text>
       </View>
@@ -70,9 +70,26 @@ const SessionCard: React.FC<StudySessionCardProps> = ({ session }) => {
        <View className="flex-row items-center mb-4">
         <Ionicons name="time" size={16} color="#059669" />
         <Text className="text-sm text-gray-700 ml-2">{session.time}</Text>
-      </View>
+      </View> */}
 
-
+      <View className="flex-row items-center justify-between mb-4">
+          <View className="flex-row items-center mb-3">
+              <View className="flex-row items-center mr-6">
+                <Ionicons name="calendar" size={16} color="#6B7280" />
+                <Text className="text-sm text-gray-600 ml-1.5">
+                    {session.date}
+                </Text>
+              </View>
+                
+              <View className="flex-row items-center">
+                <Ionicons name="time" size={16} color="#6B7280" />
+                <Text className="text-sm font-medium text-gray-700 ml-2">
+                    {session.time}
+                </Text>
+              </View>
+          </View>  
+      </View>      
+        
       {/* Meeting Button */}
       {session.meetingLink && (
         <TouchableOpacity

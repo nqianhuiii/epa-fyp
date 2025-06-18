@@ -48,7 +48,7 @@ const SessionsListScreen: React.FC = () => {
     if (loading) {
       return (
         <View className="flex-1 justify-center items-center">
-          <ActivityIndicator size="large" color="#10B981" />
+          <ActivityIndicator size="small" color="#10B981" />
           <Text className="text-gray-600 mt-2">Sedang memuatkan sesi belajar...</Text>
         </View>
       );

@@ -1,75 +1,78 @@
 import { Ionicons } from '@expo/vector-icons';
 import { router, Stack } from 'expo-router';
 import React, { useEffect, useState } from 'react';
-import { Alert, RefreshControl, SafeAreaView, ScrollView } from 'react-native';
+import { Alert, RefreshControl, SafeAreaView, ScrollView, StatusBar } from 'react-native';
 import BackButton from '../../../components/custom/customBackButton';
 import LoadingScreenWithHeader from '../../../components/custom/loadingScreenWithHeader';
-import QuizCard from '../../../components/custom/quiz/quizCard';
 import { Box } from '../../../components/ui/box';
 import { Text } from '../../../components/ui/text';
 import { VStack } from '../../../components/ui/vstack';
-import { QuizController } from '../../../hooks/useQuizController';
-import { Quiz } from '../../../types/QuizType';
+import { FlashcardController } from '../../../hooks/useFlashcardController';
+import { FlashcardSet } from '@/types/FlashcardType';
+import FlashcardComponent from '../../../components/custom/flashcard/flashcardComponent';
 
-const QuizListScreen: React.FC = () => {
-  const { quizzes, isLoading, getQuizzes } = QuizController();
+const FlashcardListScreen: React.FC = () => { 
+  const { flashcards, isLoading, getFlashcards } = FlashcardController();
   const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
-    loadQuizzes();
+    loadFlashcards();
   }, []);
 
-  const loadQuizzes = async () => {
+  const loadFlashcards = async () => {
     try {
-      const result = await getQuizzes();
+      const result = await getFlashcards();
       if (!result.success) {
-        console.error('Error loading quizzes:', result.error);
-        Alert.alert('Error', 'Failed to load quizzes. Please try again.');
+        console.error('Error loading flashcards:', result.error);
+        Alert.alert('Error', 'Failed to load flashcards. Please try again.');
       }
     } catch (error) {
-      console.error('Error loading quizzes:', error);
-      Alert.alert('Error', 'Failed to load quizzes. Please try again.');
+      console.error('Error loading flashcards:', error);
+      Alert.alert('Error', 'Failed to load flashcards. Please try again.');
     }
   };
 
   const onRefresh = async () => {
     setRefreshing(true);
     try {
-      const result = await getQuizzes();
+      const result = await getFlashcards();
       if (!result.success) {
-        console.error('Error refreshing quizzes:', result.error);
-        Alert.alert('Error', 'Failed to refresh quizzes. Please try again.');
+        console.error('Error refreshing flashcards:', result.error);
+        Alert.alert('Error', 'Failed to refresh flashcards. Please try again.');
       }
     } catch (error) {
-      console.error('Error refreshing quizzes:', error);
-      Alert.alert('Error', 'Failed to refresh quizzes. Please try again.');
+      console.error('Error refreshing flashcards:', error);
+      Alert.alert('Error', 'Failed to refresh flashcards. Please try again.');
     } finally {
       setRefreshing(false);
     }
   };
 
-const handleQuizPress = (quiz: Quiz) => {
+const handleFlashcardPress = (flashcard: FlashcardSet) => {
   router.push({
-    pathname: "/screens/quiz/taking/[id]",
-    params: { id: quiz.id, quiz: JSON.stringify(quiz) }
+    pathname: "/screens/flashcard/taking/[id]",
+    params: { id: flashcard.id, flashcardSet: JSON.stringify(flashcard) }
   });
 };
   if (isLoading) {
     return (
       <LoadingScreenWithHeader
-        title="Kuiz"
-        message="Sedang memuatkan kuiz..."
+        title="Kad Imbasan"
+        message="Sedang memuatkan kad imbasan..."
         showBackButton={true}
       />
     );
   }
 
   return (
-    <SafeAreaView className="flex-1 bg-gray-50">
+    <SafeAreaView className="flex-1 bg-white">
+      {/* Add StatusBar to ensure proper styling */}
+      <StatusBar barStyle="dark-content" backgroundColor="white" />
+      
       <Stack.Screen 
         options={{ 
           headerShown: true, 
-          headerTitle: "Kuiz", 
+          headerTitle: "Kad Imbasan", 
           headerShadowVisible: false,
           headerBackTitle: '',
           headerLeft: () => BackButton()
@@ -89,25 +92,25 @@ const handleQuizPress = (quiz: Quiz) => {
           />
         }
       >
-        {quizzes.length === 0 ? (
+        {flashcards.length === 0 ? (
           <Box className="flex-1 items-center justify-center px-4">
             <Box className="w-20 h-20 bg-emerald-50 rounded-full items-center justify-center mb-4">
               <Ionicons name="help-circle-outline" size={40} color="#10B981" />
             </Box>
             <Text className="text-xl font-bold text-gray-800 mb-2">
-              No Quizzes Yet
+              Tiada kad imbasan tersedia
             </Text>
             <Text className="text-sm text-gray-500 text-center leading-relaxed">
-              Quizzes will appear here when they{'\n'}become available for you to take.
+              Kad Imbasan akan dipaparkan di sini{'\n'}apabila ia tersedia untuk anda.
             </Text>
           </Box>
         ) : (
           <VStack className="space-y-0">
-            {quizzes.map((quiz) => (
-              <QuizCard 
-                key={quiz.id}
-                quiz={quiz}
-                onPress={handleQuizPress}
+            {flashcards.map((flashcard) => (
+              <FlashcardComponent 
+                key={flashcard.id}
+                flashcard={flashcard}
+                onPress={handleFlashcardPress}
               />
             ))}
           </VStack>
@@ -117,4 +120,4 @@ const handleQuizPress = (quiz: Quiz) => {
   );
 };
 
-export default QuizListScreen;
+export default FlashcardListScreen;
