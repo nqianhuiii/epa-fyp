@@ -49,7 +49,7 @@ const FlashcardListScreen: React.FC = () => {
   };
 
 const handleFlashcardPress = (flashcard: FlashcardSet) => {
-  router.push({
+  router.replace({
     pathname: "/screens/flashcard/taking/[id]",
     params: { id: flashcard.id, flashcardSet: JSON.stringify(flashcard) }
   });

@@ -21,14 +21,12 @@ interface FlashcardStore {
   markCard: (status: 'kuasai' | 'belum-kuasai') => void;
   nextCard: () => boolean; // returns false if no more cards
   previousCard: () => boolean; // returns false if already at first card
-  goToCard: (index: number) => boolean; // go to specific card
   completeAttempt: (timeSpent: number) => void;
   clearCurrentSession: () => void;
   getAttemptHistory: (flashcardSetId: string) => FlashcardAttempt[];
   getTotalKuasai: (flashcardSetId: string) => number;
   getTotalBelumKuasai: (flashcardSetId: string) => number;
   getTotalAttempts: (flashcardSetId: string) => number;
-  resetCurrentCard: () => void;
   resetAllCards: () => void;
   
   // New utility functions for kuasai/belum kuasai analysis
@@ -126,42 +124,6 @@ export const useFlashcardStore = create<FlashcardStore>()(
         set({ currentCardIndex: state.currentCardIndex - 1 });
         return true;
       },
-
-      // Go to specific card
-      goToCard: (index: number) => {
-        const state = get();
-        if (!state.currentFlashcardSet || index < 0 || index >= state.currentFlashcardSet.cards.length) {
-          return false;
-        }
-        
-        set({ currentCardIndex: index });
-        return true;
-      },
-
-      // Reset current card status (for current card only)
-      resetCurrentCard: () => set((state) => {
-        const newStatuses = [...state.currentCardStatuses];
-        const currentIndex = state.currentCardIndex;
-        const previousStatus = newStatuses[currentIndex];
-        
-        let newKuasaiCount = state.kuasaiCount;
-        let newBelumKuasaiCount = state.belumKuasaiCount;
-        
-        // Remove previous status count
-        if (previousStatus === 'kuasai') {
-          newKuasaiCount--;
-        } else if (previousStatus === 'belum-kuasai') {
-          newBelumKuasaiCount--;
-        }
-        
-        newStatuses[currentIndex] = 'not-answered';
-        
-        return {
-          currentCardStatuses: newStatuses,
-          kuasaiCount: newKuasaiCount,
-          belumKuasaiCount: newBelumKuasaiCount,
-        };
-      }),
 
       // Reset all cards in current session
       resetAllCards: () => set((state) => {

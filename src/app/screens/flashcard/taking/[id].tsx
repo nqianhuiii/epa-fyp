@@ -1,12 +1,15 @@
 // app/screens/flashcard/taking/[id].tsx
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useLayoutEffect, useMemo, useState } from 'react';
 import { Alert, View, Text } from 'react-native';
 import { FlashcardScreen } from '../../../../components/custom/flashcard/flashcardScreen';
 // import { FlashcardResultScreen } from '../../../../components/custom/flashcard/flashcardResultScreen';
 import { useFlashcardStore } from '../../../../store/flashcardStore';
 import { FlashcardSet } from '../../../../types/FlashcardType';
 import { useSharedValue, withTiming } from 'react-native-reanimated';
+import FlashcardResultScreen from '../results';
+import { useNavigation } from '@react-navigation/native';
+import BackButton from '../../../../components/custom/customBackButton';
 
 export default function FlashcardTakingPage() {
   const router = useRouter();
@@ -25,7 +28,6 @@ export default function FlashcardTakingPage() {
     nextCard,
     completeAttempt,
     clearCurrentSession,
-    resetCurrentCard,
   } = useFlashcardStore();
 
   // Extract the flashcard set from router params
@@ -54,7 +56,22 @@ export default function FlashcardTakingPage() {
   const [isFlipped, setIsFlipped] = useState(false);
   const [flashcardInitialized, setFlashcardInitialized] = useState(false);
   const flipAnim = useSharedValue(0);
+ const navigation = useNavigation();
 
+  useLayoutEffect(() => {
+    if (stage === 'results') {
+      navigation.setOptions({
+        headerShown: true,
+        headerTitle: 'Keputusan Kad Imbasan',
+        headerShadowVisible: false,
+        headerBackTitleVisible: false,
+        headerLeft: () => <BackButton />,
+      });
+    } else {
+      navigation.setOptions({ headerShown: false });
+    }
+  }, [stage, navigation]);
+  
   // Initialize flashcard set in store when component mounts
   useEffect(() => {
     if (flashcardSet && !flashcardInitialized) {
@@ -94,12 +111,18 @@ export default function FlashcardTakingPage() {
   // Handle marking card as belum kuasai
   const handleMarkBelumKuasai = useCallback(() => {
     markCard('belum-kuasai');
-  }, [markCard]);
 
-  // Handle reset current card
-  const handleResetCard = useCallback(() => {
-    resetCurrentCard();
-  }, [resetCurrentCard]);
+    const hasMoreCards = nextCard();
+
+    if (hasMoreCards) {
+        setIsFlipped(false);
+        flipAnim.value = 0;
+    } else {
+        handleCompleteSession();
+    }
+  }, [markCard, nextCard, flipAnim]);
+
+
 
 //   // Handle next card
 //   const handleNextCard = useCallback(() => {
@@ -217,25 +240,24 @@ export default function FlashcardTakingPage() {
           onFlip={handleFlip}
           onMarkKuasai={handleMarkKuasai}
           onMarkBelumKuasai={handleMarkBelumKuasai}
-          onResetCard={handleResetCard}
         //   onNextCard={handleNextCard}
           onExit={handleExitWithConfirm}
         />
       );
 
-    // case 'results':
-    //   return (
-    //     <FlashcardResultScreen
-    //       flashcardSetTitle={flashcardSet.title}
-    //       totalCards={flashcardSet.cards.length}
-    //       kuasaiCount={kuasaiCount}
-    //       belumKuasaiCount={belumKuasaiCount}
-    //       timeSpent={sessionStartTime ? 
-    //         Math.floor((new Date().getTime() - sessionStartTime.getTime()) / 1000) : 0}
-    //       onFinish={handleFinish}
-    //       onRestart={handleRestart}
-    //     />
-    //   );
+    case 'results':
+      return (
+        <FlashcardResultScreen
+          flashcardSetTitle={flashcardSet.title}
+          totalCards={flashcardSet.cards.length}
+          kuasaiCount={kuasaiCount}
+          belumKuasaiCount={belumKuasaiCount}
+          timeSpent={sessionStartTime ? 
+            Math.floor((new Date().getTime() - sessionStartTime.getTime()) / 1000) : 0}
+          onFinish={handleFinish}
+          onRestart={handleRestart}
+        />
+      );
 
     default:
       return (

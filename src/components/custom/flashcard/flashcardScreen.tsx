@@ -24,7 +24,7 @@ interface FlashcardScreenProps {
   onFlip: () => void;
   onMarkKuasai: () => void;
   onMarkBelumKuasai: () => void;
-  onResetCard: () => void;
+  // onResetCard: () => void;
 //   onNextCard: () => void;
   onExit: () => void;
 }
@@ -43,7 +43,7 @@ export function FlashcardScreen({
   onFlip,
   onMarkKuasai,
   onMarkBelumKuasai,
-  onResetCard,
+  // onResetCard,
 //   onNextCard,
   onExit,
 }: FlashcardScreenProps) {
@@ -85,7 +85,7 @@ export function FlashcardScreen({
         currentCardStatus={currentCardStatus}
         onMarkKuasai={onMarkKuasai}
         onMarkBelumKuasai={onMarkBelumKuasai}
-        onResetCard={onResetCard}
+        // onResetCard={onResetCard}
         // onNextCard={onNextCard}
       />
     </SafeAreaView>

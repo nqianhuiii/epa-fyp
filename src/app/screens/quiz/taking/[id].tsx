@@ -49,7 +49,7 @@ export default function QuizTakingPage() {
   // Local UI state
   const forceCountdown = params.forceCountdown === 'true';
   const [stage, setStage] = useState<'countdown' | 'question' | 'answer-reveal'>('countdown');
-  const [countdown, setCountdown] = useState(60);
+  const [countdown, setCountdown] = useState(5);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
   const [timeRemaining, setTimeRemaining] = useState(0);

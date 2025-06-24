@@ -8,7 +8,7 @@ interface ActionButtonsProps {
   currentCardStatus: 'kuasai' | 'belum-kuasai' | 'not-answered';
   onMarkKuasai: () => void;
   onMarkBelumKuasai: () => void;
-  onResetCard: () => void;
+  // onResetCard: () => void;
 //   onNextCard: () => void;
 }
 
@@ -19,7 +19,7 @@ export const ActionButtons = ({
   currentCardStatus,
   onMarkKuasai, 
   onMarkBelumKuasai, 
-  onResetCard, 
+  // onResetCard, 
 //   onNextCard 
 }: ActionButtonsProps) => (
   isFlipped && (
