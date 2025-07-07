@@ -32,7 +32,13 @@
       "expo-router",
       "expo-build-properties",
       "expo-font",
-      "expo-web-browser"
+      "expo-web-browser",
+      [
+        "expo-av",
+        {
+          "microphonePermission": "Allow $(PRODUCT_NAME) to access your microphone for voice messages."
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true

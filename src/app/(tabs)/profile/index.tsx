@@ -1,4 +1,4 @@
-import { router, Stack } from "expo-router";
+import { router, Stack, useFocusEffect } from "expo-router";
 import { SafeAreaView, View } from "react-native";
 import { Avatar, AvatarFallbackText, AvatarImage } from "../../../components/ui/avatar";
 import { Button, ButtonText } from "../../../components/ui/button";
@@ -8,10 +8,18 @@ import { Text } from "../../../components/ui/text";
 import { VStack } from "../../../components/ui/vstack";
 import { auth } from "../../../config/firebaseConfig";
 import { useAuthStore } from "../../../store/authStore";
+import { useCallback } from "react";
 
 export default function Profile(){
     const { customUserData } = useAuthStore();
-  
+ 
+    useFocusEffect(
+      useCallback(() => {
+        // Optional: could trigger a Firestore refresh or Zustand update if needed
+        console.log("Profile screen focused, customUserData:", customUserData);
+      }, [customUserData])
+    );
+
     return (
       <SafeAreaView className="flex-1 bg-white">
         <Stack.Screen options={{ headerShown: true, headerTitle: "Profil"}}/>
@@ -23,10 +31,10 @@ export default function Profile(){
                   <AvatarFallbackText>Img</AvatarFallbackText>
                   <AvatarImage
                     source={{ 
-                      uri: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8dXNlcnxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=800&q=60"
+                      uri: customUserData?.profilePhotoUrl|| 'https://api.dicebear.com/7.x/avataaars/png?seed=rohaini&backgroundColor=10b981'
                     }}
                   />
-                </Avatar>  
+                </Avatar> 
                 <VStack space="sm" className="p-2 flex-1">
                   <Heading size="md" className="flex-wrap">
                     {customUserData?.fullName}

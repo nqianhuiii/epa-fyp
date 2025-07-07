@@ -129,7 +129,7 @@ export default function ForumScreen() {
   };
 
   return (
-    <View style={{ flex: 1, backgroundColor: "#F0F2F5" }}>
+    <View style={{ flex: 1, backgroundColor: "#FFFFFF" }}>
       <Stack.Screen
         options={{
           headerShown: true,
@@ -141,7 +141,7 @@ export default function ForumScreen() {
         }}
       />
 
-      <View className="px-4 py-4 bg-white">
+      <View className="px-4 py-4 ">
         <HStack className="justify-between" space="md">
           <Button
             className={`${

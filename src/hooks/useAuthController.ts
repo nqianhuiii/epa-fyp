@@ -49,6 +49,9 @@ export const useAuthController = () => {
                 {
                     fullName: userData?.fullName,
                     userName: userData?.userName,
+                    schoolName: userData?.schoolName ?? '',
+                    phoneNumber: userData?.phoneNumber ?? '',
+                    profilePhotoUrl: userData?.profilePhotoUrl ?? '',
                 }   
             );
 
@@ -86,6 +89,9 @@ export const useAuthController = () => {
                         {
                             fullName: userData?.fullName,
                             userName: userData?.userName,
+                            schoolName: userData?.schoolName ?? '',
+                            phoneNumber: userData?.phoneNumber ?? '',
+                            profilePhotoUrl: userData?.profilePhotoUrl ?? '',
                         }   
                     );
                 }else{
@@ -100,7 +106,7 @@ export const useAuthController = () => {
         })
     }
 
-    const updateProfile = async(userId: string, profileData: {fullName: string, userName: string, phoneNumber: string, schoolName: string}) => {
+    const updateProfile = async(userId: string, profileData: {fullName: string, userName: string, phoneNumber: string, schoolName: string,  profilePhotoUrl?: string}) => {
         try{
             // update profile in firestore
             await updateUserAccount(userId, profileData);
@@ -115,6 +121,7 @@ export const useAuthController = () => {
                         userName: profileData.userName,
                         schoolName: profileData.schoolName ?? '',
                         phoneNumber: profileData.phoneNumber ?? '',
+                        profilePhotoUrl: profileData.profilePhotoUrl ?? '',
                     }   
                 );
             }

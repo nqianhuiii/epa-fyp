@@ -7,7 +7,7 @@ import { useForumTabStore } from "../../..//store/forumTabStore";
 import BackButton from "../../../components/custom/customBackButton";
 import { usePostActionSheet } from "../../../components/custom/postActionSheet";
 import PostCard from "../../../components/custom/postCard";
-import { Avatar, AvatarFallbackText } from "../../../components/ui/avatar";
+import { Avatar, AvatarFallbackText, AvatarImage } from "../../../components/ui/avatar";
 import { HStack } from "../../../components/ui/hstack";
 import { Text } from "../../../components/ui/text";
 import { VStack } from "../../../components/ui/vstack";
@@ -15,6 +15,7 @@ import { useForumController } from "../../../hooks/useForumController";
 import { useAuthStore } from "../../../store/authStore";
 import { useForumStore } from "../../../store/forumStore";
 import CustomActivityIndicator from "../../../components/custom/customActivityIndicator";
+import LoadingScreenWithHeader from "../../../components/custom/loadingScreenWithHeader";
 
 export default function ForumDetailScreen() {
   const { id } = useLocalSearchParams();
@@ -28,7 +29,7 @@ export default function ForumDetailScreen() {
   const { commentsByPost, addComment, toggleLike } = useForumStore();
   const comments = commentsByPost[postId] || [];
   const { getPostById, fetchCommentsByPostId } = useForumController();
-  const { user } = useAuthStore();
+  const { user, customUserData } = useAuthStore();
   const { activeTab } = useForumTabStore();
   const inputRef = useRef<TextInput>(null);
   const scrollViewRef = useRef<ScrollView>(null);
@@ -66,6 +67,16 @@ export default function ForumDetailScreen() {
       setIsLoading(false);
     }
   };
+
+  if (isLoading) {
+      return (
+        <LoadingScreenWithHeader
+          title="Post"
+          message="Sedang memuatkan post"
+          showBackButton={true}
+        />
+      );
+  }
 
   const handleLike = async () => {
     if (!user?.uid || !post) return;
@@ -118,10 +129,14 @@ export default function ForumDetailScreen() {
   };
 
   const renderCommentItem = ({ item }: { item: any }) => (
-    <View className="px-5 py-3 border-b border-gray-100">
+    <View className="px-5 py-3  border-gray-100">
       <HStack space="md" className="items-start">
         <Avatar size="sm">
-          <AvatarFallbackText>{(item.username || '?').charAt(0)}</AvatarFallbackText>
+            <AvatarImage
+              source={{ 
+              uri: customUserData?.profilePhotoUrl|| 'https://api.dicebear.com/7.x/avataaars/png?seed=rohaini&backgroundColor=10b981'
+              }}
+            />        
         </Avatar>
 
         <VStack className="flex-1">
@@ -201,26 +216,41 @@ export default function ForumDetailScreen() {
             onImagePress={handleImagePress}
           />
 
-          <View className="mt-2 bg-white h-full">
-            <View className="px-5 py-3 border-b border-gray-200">
-              <Text className="font-bold text-lg">Komen ({comments.length})</Text>
-            </View>
+        <View className="mt-2 h-full">
+          <View className="px-4 py-3 bg-gray-50">
+            <Text className="font-bold text-lg text-gray-800">Komen ({comments.length})</Text>
+          </View>
 
-            {comments.length === 0 ? (
-              <View className="py-8 items-center">
-                <Text className="text-gray-500">Tiada komen lagi. Jadilah yang pertama untuk komen!</Text>
+          {comments.length === 0 ? (
+            <View className="py-8 items-center mx-4">
+              <View className="bg-white rounded-xl border border-gray-200 p-6 items-center">
+                <View className="w-12 h-12 rounded-full bg-gray-100 items-center justify-center mb-3">
+                  <Ionicons name="chatbubble-outline" size={20} color="#6B7280" />
+                </View>
+                <Text className="text-gray-500 text-center text-sm">
+                  Tiada komen lagi.
+                </Text>
+                <Text className="text-gray-400 text-center text-xs mt-1">
+                  Jadilah yang pertama untuk komen!
+                </Text>
               </View>
-            ) : (
-              comments.map(comment =>
-                <View key={comment.id}>
+            </View>
+          ) : (
+            <ScrollView className="flex-1 px-4 py-1">
+              {comments.map((comment, index) => (
+                <View 
+                  key={comment.id}
+                  className="bg-gray-100 rounded-xl p-1 mb-3"
+                >
                   {renderCommentItem({ item: comment })}
                 </View>
-              )
-            )}
-          </View>
+              ))}
+            </ScrollView>
+          )}
+        </View>
         </ScrollView>
 
-        <View className="border-t border-gray-200 bg-white px-4 py-2">
+        <View className="border rounded-xl border-gray-200 bg-white px-4 py-3">
           <HStack space="md" className="items-center">
             <Avatar size="sm">
               <AvatarFallbackText>{(user?.displayName || 'U').charAt(0)}</AvatarFallbackText>

@@ -20,7 +20,7 @@ export default function CustomHomeHeader(){
                     <AvatarFallbackText>Img</AvatarFallbackText>
                     <AvatarImage
                         source={{ 
-                            uri: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8dXNlcnxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=800&q=60"
+                        uri: customUserData?.profilePhotoUrl|| 'https://api.dicebear.com/7.x/avataaars/png?seed=rohaini&backgroundColor=10b981'
                         }}
                     />
                 </Avatar>  

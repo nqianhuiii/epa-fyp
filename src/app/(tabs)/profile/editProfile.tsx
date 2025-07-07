@@ -10,14 +10,15 @@ import { useAuthStore } from "../../../store/authStore";
 import { validateUserProfileForm } from "../../../utils/formValidation";
 import CustomInputWithErrorMsg from "../../../components/custom/customInputWithErrorMsg";
 import CustomActivityIndicator from "../../../components/custom/customActivityIndicator";
+import ProfilePhotoEditor from "../../../components/custom/profilePhotoEditor";
 
 export default function EditProfile() {
     const [fullName, setFullName] = useState('');
     const [userName, setUserName] = useState('');
     const [phoneNumber, setPhoneNumber] = useState('');
     const [schoolName, setSchoolName] = useState('');
+    const [profilePhotoUrl, setProfilePhotoUrl] = useState('');
 
-    // const [email, setEmail] = useState('');
     const [loading, setLoading] = useState(false);
     const [fullNameError, setFullNameError] = useState('');
     const [userNameError, setUserNameError] = useState('');
@@ -31,7 +32,8 @@ export default function EditProfile() {
             setFullName(customUserData.fullName || '');
             setUserName(customUserData.userName || '');
             setPhoneNumber(customUserData.phoneNumber || '');
-            setSchoolName(customUserData.schoolName || '')
+            setSchoolName(customUserData.schoolName || '');
+            setProfilePhotoUrl(customUserData.profilePhotoUrl || '');
         }
     }, [customUserData]);
     
@@ -40,6 +42,10 @@ export default function EditProfile() {
         setFullNameError(errors.fullNameError);
         setUserNameError(errors.userNameError);
         return isValid;
+    }
+
+    const handlePhotoUpdated = (photoUrl: string) => {
+        setProfilePhotoUrl(photoUrl);
     }
 
     const handleUpdateProfile = async() => {
@@ -52,7 +58,13 @@ export default function EditProfile() {
 
         setLoading(true);
         try{
-            await updateProfile(user.uid, { fullName, userName, phoneNumber, schoolName});
+            await updateProfile(user.uid, { 
+                fullName, 
+                userName, 
+                phoneNumber, 
+                schoolName,
+                profilePhotoUrl: profilePhotoUrl || customUserData?.profilePhotoUrl
+            });
             showAlert("Profil berjaya dikemas kini", "success");
             router.back();
         }catch(e:any){
@@ -78,6 +90,12 @@ export default function EditProfile() {
                 keyboardShouldPersistTaps="handled"
             >
                 <VStack className="flex-1 px-5 pb-6">
+                    {/* Profile Photo Editor */}
+                    <ProfilePhotoEditor 
+                        userId={user?.uid || ''} 
+                        onPhotoUpdated={handlePhotoUpdated}
+                    />
+                    
                     <CustomInputWithErrorMsg
                         label="Nama Penuh"
                         value={fullName}
@@ -110,7 +128,7 @@ export default function EditProfile() {
                         <CustomActivityIndicator/>
                     ) : (
                         <Button className="bg-emerald-400 mt-10 rounded-xl h-11" onPress={handleUpdateProfile} >
-                            <ButtonText>Edit Profil</ButtonText>
+                            <ButtonText>Simpan Profil</ButtonText>
                         </Button>
                     )}
                 </VStack>
@@ -119,4 +137,3 @@ export default function EditProfile() {
         </SafeAreaView>
     );
 }
-

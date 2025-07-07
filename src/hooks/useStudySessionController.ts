@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { fetchStudySessions } from "../services/studySessionService";
+import { fetchStudySessions, fetchStudySessionsThisMonth } from "../services/studySessionService";
 import { StudySession } from "../types/SessionType";
 
 export const useStudySessionsController = () => {
@@ -20,5 +20,22 @@ export const useStudySessionsController = () => {
         }
     };
 
-  return{studySessions, isLoading, getStudySessions};
+     const getStudySessionsThisMonth = async (onlyThisMonth: boolean = false) => {
+    try {
+      setIsLoading(true);
+      const data = onlyThisMonth
+        ? await fetchStudySessionsThisMonth()
+        : await fetchStudySessions();
+
+      setStudySessions(data);
+      return { success: true, data };
+    } catch (error: any) {
+      console.error('Error fetching sessions:', error);
+      return { success: false, error: error.message || 'Unknown error' };
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return{studySessions, isLoading, getStudySessions, getStudySessionsThisMonth};
 }

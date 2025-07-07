@@ -36,9 +36,9 @@ const SessionCard: React.FC<StudySessionCardProps> = ({ session }) => {
       </Text>
 
       <View className="flex-row items-center mb-3 bg-emerald-50 py-2 px-3 rounded-lg">
-        {session.teacherImage ? (
+        {session.tutorImage ? (
           <Image
-            source={{ uri: session.teacherImage }}
+            source={{ uri: session.tutorImage }}
             className="w-12 h-12 rounded-full border-2 border-emerald-500 mr-3"
           />
         ) : (

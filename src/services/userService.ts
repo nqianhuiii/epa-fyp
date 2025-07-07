@@ -26,6 +26,9 @@ export const updateUserAccount = async(
     userData: {
         fullName: string;
         userName: string;
+        phoneNumber?: string;
+        schoolName?: string;
+        profilePhotoUrl?: string;
     }
  ) => {
     await updateDoc(doc(db, "users", userId), {

@@ -6,6 +6,7 @@ interface CustomUserData {
     userName: string;
     phoneNumber?: string;
     schoolName?: string;
+    profilePhotoUrl?: string;
 }
 
 interface AuthState {

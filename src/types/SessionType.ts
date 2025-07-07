@@ -2,7 +2,7 @@ export interface StudySession {
   id: string;
   title: string;
   teacherName: string;
-  teacherImage?: string;
+  tutorImage?: string;
   date: string;
   time: string;
   description: string;

@@ -1,12 +1,11 @@
 import { Ionicons } from "@expo/vector-icons";
 import { formatDistanceToNow } from 'date-fns';
-import { Image, ScrollView, TouchableOpacity, View, Pressable } from "react-native";
+import { Image, ScrollView, TouchableOpacity, View, Pressable, Animated } from "react-native";
 import { Avatar, AvatarFallbackText, AvatarImage } from "../../components/ui/avatar";
-import { HStack } from "../../components/ui/hstack";
 import { Text } from "../../components/ui/text";
-import { VStack } from "../../components/ui/vstack";
 import { useAuthStore } from "../../store/authStore";
 import { useForumStore } from "../../store/forumStore";
+import { useRef, useEffect } from "react";
 
 interface Post {
   id: string;
@@ -42,9 +41,9 @@ const PostCard: React.FC<PostCardProps> = ({
   onLongPress,
   isSelected = false
 }) => {
-  const { user } = useAuthStore();
+  const { user, customUserData } = useAuthStore();
   const isLiked = post.likedBy?.includes(user?.uid ?? "");
-
+  
   const getCommentsCount = useForumStore(state => state.getCommentsCount);
   const commentCount = commentsCount ?? getCommentsCount(post.id);
 
@@ -60,6 +59,7 @@ const PostCard: React.FC<PostCardProps> = ({
 
   const handleLikePress = (e?: any) => {
     if (e) e.stopPropagation();
+  
     onLikePress(post.id);
   };
 
@@ -76,55 +76,77 @@ const PostCard: React.FC<PostCardProps> = ({
     }
   };
 
+
   const renderContent = () => (
     <View className="px-5">
-      {/* User Info */}
-      <HStack space="md" className="items-center">
-        <Avatar size="md">
-          <AvatarFallbackText>Img</AvatarFallbackText>
-          <AvatarImage
-            source={{
-              uri: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8dXNlcnxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=800&q=60"
-            }}
-          />
-        </Avatar>
-        <VStack>
-          <Text className="font-bold">{post.username || 'Unknown'}</Text>
+      {/* User Info with enhanced styling */}
+      <View className="flex-row items-center gap-2">
+        <View className="relative">
+          <Avatar size="md" >
+            <AvatarFallbackText>Img</AvatarFallbackText>
+            <AvatarImage
+              source={{ 
+                uri: customUserData?.profilePhotoUrl || 'https://api.dicebear.com/7.x/avataaars/png?seed=rohaini&backgroundColor=10b981'
+              }}
+            />
+          </Avatar>
+        </View>
+        
+        <View className="flex-1">
+          <View className="flex-row items-center space-x-2">
+            <Text className="font-bold text-gray-800">{post.username || 'Pelajar'}</Text>
+          </View>
           <Text className="text-xs text-gray-500">
             {post.createdAt && formatDate(post.createdAt.toDate())}
           </Text>
-        </VStack>
-      </HStack>
+        </View>
+      </View>
 
-      {/* Post Content */}
-      <Text className={`${isDetailView ? 'text-xl' : 'text-lg'} font-bold mt-3`}>{post.title}</Text>
-      <Text className={`${isDetailView ? 'text-base' : ''} mt-1 mb-3`} numberOfLines={isDetailView ? undefined : 2}>
-        {post.description}
-      </Text>
+      <View className="mt-4">
+        <View className="flex-row items-start justify-between mb-2">
+          <Text className={`${isDetailView ? 'text-xl' : 'text-lg'} font-bold text-gray-800 flex-1 mr-2`}>
+            {post.title}
+          </Text>
+        </View>
+        
+        <Text 
+          className={`${isDetailView ? 'text-base' : 'text-sm'} text-gray-600 leading-relaxed mb-3`} 
+          numberOfLines={isDetailView ? undefined : 3}
+        >
+          {post.description}
+        </Text>
+      </View>
 
-      {/* Post Images */}
+      {/* Post Images with enhanced styling */}
       {post.imageUrls && post.imageUrls.length > 0 && (
-        <View className="mb-3">
+        <View className="mb-4">
           {isDetailView && post.imageUrls.length === 1 ? (
-            <TouchableOpacity onPress={(e) => handleImagePress(post.imageUrls![0], e)}>
+            <TouchableOpacity 
+              onPress={(e) => handleImagePress(post.imageUrls![0], e)}
+              className="rounded-xl overflow-hidden shadow-md"
+            >
               <Image
                 source={{ uri: post.imageUrls[0] }}
-                className="w-full h-64 rounded-lg"
+                className="w-full h-64"
                 resizeMode="cover"
               />
+              {/* Image overlay for better interaction feedback */}
+              <View className="absolute inset-0 bg-black opacity-0 active:opacity-10" />
             </TouchableOpacity>
           ) : (
-            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} className="space-x-2">
               {post.imageUrls.map((imageUrl, index) => (
                 <TouchableOpacity
                   key={index}
                   onPress={(e) => handleImagePress(imageUrl, e)}
+                  className="rounded-lg overflow-hidden shadow-sm mr-2"
                 >
                   <Image
                     source={{ uri: imageUrl }}
-                    className={`${isDetailView ? 'w-32 h-32' : 'w-24 h-24'} rounded-lg mr-2`}
+                    className={`${isDetailView ? 'w-32 h-32' : 'w-24 h-24'}`}
                     resizeMode="cover"
                   />
+
                 </TouchableOpacity>
               ))}
             </ScrollView>
@@ -132,37 +154,55 @@ const PostCard: React.FC<PostCardProps> = ({
         </View>
       )}
 
-      {/* Likes and Comments */}
-      <View className="mt-4 flex-row items-center">
-        <TouchableOpacity onPress={handleLikePress} className="flex-row items-center mr-6">
-          <Ionicons
-            name={isLiked ? "thumbs-up" : "thumbs-up-outline"}
-            size={20}
-            color={isLiked ? "#10B981" : "#4B5563"}
-          />
-          <Text className="ml-2">{post.likedBy?.length || 0} Suka</Text>
-        </TouchableOpacity>
+      {/* Enhanced Likes and Comments section */}
+      <View className="pt-3 border-t border-gray-100">
+        <View className="flex-row items-center justify-between">
+          <View className="flex-row items-center gap-2">
+            {/* Like button with animation */}
+              <TouchableOpacity 
+                onPress={handleLikePress} 
+                className={`flex-row items-center px-3 py-2 rounded-full ${
+                  isLiked ? 'bg-emerald-50' : 'bg-gray-50'
+                }`}
+                activeOpacity={0.7}
+              >
+                <Ionicons
+                  name={isLiked ? "thumbs-up" : "thumbs-up-outline"}
+                  size={18}
+                  color={isLiked ? "#10B981" : "#6B7280"}
+                />
+                <Text className={`ml-2 text-sm font-medium ${
+                  isLiked ? 'text-emerald-600' : 'text-gray-600'
+                }`}>
+                  {post.likedBy?.length || 0} Suka
+                </Text>
+              </TouchableOpacity>
 
-        <TouchableOpacity className="flex-row items-center">
-          <Ionicons name="chatbubble-outline" size={20} color="#4B5563" />
-          <Text className="ml-2">{commentCount} Komen</Text>
-        </TouchableOpacity>
+            {/* Comment button */}
+            <TouchableOpacity className="flex-row items-center px-3 py-2 rounded-full bg-gray-50">
+              <Ionicons name="chatbubble-outline" size={18} color="#6B7280" />
+              <Text className="ml-2 text-sm font-medium text-gray-600">
+                {commentCount} Komen
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </View>
       </View>
     </View>
   );
 
   if (isDetailView) {
     return (
-      <View 
-        className={`bg-white pt-4 pb-3 mb-2 ${isSelected ? 'border-2 border-emerald-400 bg-emerald-50' : ''}`}
+      <View
+        className= "bg-white border-emerald-200 border-2 rounded-xl shadow-sm pt-4 pb-4 mb-3 mx-2"
       >
         {renderContent()}
         
-        {/* Selection indicator */}
+        {/* Enhanced selection indicator */}
         {isSelected && (
-          <View className="absolute top-2 right-2">
-            <View className="w-6 h-6 rounded-full bg-emerald-400 items-center justify-center">
-              <Ionicons name="checkmark" size={18} color="white" />
+          <View className="absolute top-3 right-3">
+            <View className="w-7 h-7 rounded-full bg-emerald-400 items-center justify-center shadow-md">
+              <Ionicons name="checkmark" size={16} color="white" />
             </View>
           </View>
         )}
@@ -172,16 +212,25 @@ const PostCard: React.FC<PostCardProps> = ({
 
   // ForumScreen, not detail view
   return (
-    <Pressable
-      className={`bg-white pt-4 pb-3 mb-2 ${isSelected ? 'border-2 border-emerald-400 bg-emerald-50' : ''}`}
-      onPress={handlePostPress}
-      onLongPress={handleLongPress}
-      delayLongPress={500} // 500ms for long press
-      android_ripple={{ color: '#e6e6e6' }}
-      style={({ pressed }) => [{ opacity: pressed ? 0.9 : 1 }]}
-    >
-      {renderContent()}
-    </Pressable>
+      <Pressable
+        className= "bg-white rounded-xl shadow-sm pt-4 pb-4 mb-3 mx-2 border-2 border-emerald-200"
+        onPress={handlePostPress}
+        onLongPress={handleLongPress}
+        delayLongPress={500}
+        android_ripple={{ color: '#f0f0f0', borderless: false }}
+        style={({ pressed }) => [{ opacity: pressed ? 0.95 : 1 }]}
+      >
+        {renderContent()}
+        
+        {/* Enhanced selection indicator */}
+        {isSelected && (
+          <View className="absolute top-3 right-3">
+            <View className="w-7 h-7 rounded-full bg-emerald-400 items-center justify-center shadow-md">
+              <Ionicons name="checkmark" size={16} color="white" />
+            </View>
+          </View>
+        )}
+      </Pressable>
   );
 }
 

@@ -67,20 +67,20 @@ export default function CreateAccount(){
                 keyboardShouldPersistTaps="handled"
             >
                 <VStack className="flex-1 px-5 pt-12 pb-6">
-                <Heading className="text-3xl text-emerald-400">Create Account</Heading>
-                <Text className="text-gray-500 text-base pt-4">Let's get you started with your new account!</Text>
+                <Heading className="text-3xl text-emerald-400">Cipta Akaun</Heading>
+                <Text className="text-gray-500 text-base pt-4">Mari mulakan dengan akaun baharu anda!</Text>
 
                 <CustomInputWithErrorMsg
-                        label="Full Name"
+                        label="Name Penuh"
                         value={fullName}
-                        placeholder="Enter your full name"
+                        placeholder="Masukkan nama penuh anda"
                         onChangeText={setFullName}
                         error={fullNameError}
                 />
 
                 <FormControl className="mt-6">
                     <FormControlLabelText className="text-xl text-black-900 mb-2">
-                        User Name
+                        Nama Pengguna
                     </FormControlLabelText>
                 </FormControl>
                 <Input className="rounded-xl h-11 bg-gray-100 border-0">
@@ -90,13 +90,13 @@ export default function CreateAccount(){
                         type="text"
                         autoCapitalize="none"
                         autoCorrect={false}
-                        placeholder="Enter your username"
+                        placeholder="Masukkan nama pengguna anda"
                     />
                 </Input>
 
                 <FormControl className="mt-6">
                     <FormControlLabelText className="text-xl text-black-900 mb-2">
-                        Email Address
+                        Emel
                     </FormControlLabelText>
                 </FormControl>
                 <Input className="rounded-xl h-11 bg-gray-100 border-0">
@@ -107,13 +107,13 @@ export default function CreateAccount(){
                         keyboardType="email-address"
                         autoCapitalize="none"
                         autoCorrect={false}
-                        placeholder="Enter your email"
+                        placeholder="Masukkan emel anda"
                     />
                 </Input>
 
                 <FormControl className="mt-6">
                     <FormControlLabelText className="text-xl text-black-900 mb-2">
-                        Password
+                        Kata Laluan
                     </FormControlLabelText>
                 </FormControl>
                 <Input className="rounded-xl h-11 bg-gray-100 border-0">
@@ -124,7 +124,7 @@ export default function CreateAccount(){
                         secureTextEntry={!showPassword}
                         autoCapitalize="none"
                         autoCorrect={false}
-                        placeholder="Enter password"
+                        placeholder="Masukkan kata laluan anda"
                     />
                     <InputSlot className="pr-3" onPress={togglePasswordVisibility}>
                         <Ionicons 
@@ -140,10 +140,10 @@ export default function CreateAccount(){
                 ) : (
                     <>
                         <Button className="bg-emerald-400 mt-10 rounded-xl h-11" onPress={handleSignUp}>
-                            <ButtonText>Create Account</ButtonText>
+                            <ButtonText>Cipta Akaun</ButtonText>
                         </Button>
                         <Button className="border border-emerald-400 bg-white font-medium mt-5 mb-4 rounded-xl h-11" onPress={() => router.back()}>
-                            <ButtonText className="text-emerald-400">Have an account already?</ButtonText>
+                            <ButtonText className="text-emerald-400">Sudah ada akaun?</ButtonText>
                         </Button> 
                     </>
                 )}

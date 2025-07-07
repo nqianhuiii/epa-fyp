@@ -60,12 +60,12 @@ export default function SignIn(){
                 className="flex-1"                 
             >
             <VStack className="pt-24 px-5">
-              <Heading className="text-3xl text-emerald-400">Login</Heading>
-              <Text className="text-gray-500 text-base pt-4">Welcome back to the app</Text>
+              <Heading className="text-3xl text-emerald-400">Log Masuk</Heading>
+              <Text className="text-gray-500 text-base pt-4">Selemat Kembali ke EPA</Text>
 
               <FormControl className="mt-8">
                 <FormControlLabelText className="text-xl text-black-900 mb-2">
-                  Email Address
+                  Emel
                 </FormControlLabelText>
               </FormControl>
               <Input className="rounded-xl h-11 bg-gray-100 border-0">
@@ -76,13 +76,13 @@ export default function SignIn(){
                   keyboardType="email-address"
                   autoCapitalize="none"
                   autoCorrect={false}
-                  placeholder="Enter your email"              
+                  placeholder="Masukkan emel anda"              
                 />
               </Input>
 
               <FormControl className="mt-6">
                 <FormControlLabelText className="text-xl text-black-900 mb-2">
-                  Password
+                  Kata Laluan
                 </FormControlLabelText>
               </FormControl>
               <Input className="rounded-xl h-11 bg-gray-100 border-0">
@@ -93,7 +93,7 @@ export default function SignIn(){
                   secureTextEntry={!showPassword}
                   autoCapitalize="none"
                   autoCorrect={false}
-                  placeholder="Enter password"
+                  placeholder="Masukkan kata laluan"
                 />
                 <InputSlot className="pr-3" onPress={togglePasswordVisibility}>
                   <Ionicons 
@@ -109,10 +109,10 @@ export default function SignIn(){
               ) : (
                 <>
                   <Button className="bg-emerald-400 mt-8 rounded-xl h-11" onPress={handleSignIn}>
-                    <ButtonText>Sign In</ButtonText>
+                    <ButtonText>Log Masuk</ButtonText>
                   </Button>
                   <Button className="border border-emerald-400 bg-white font-medium mt-5 mb-4 rounded-xl h-11" onPress={() => router.push('/(auth)/createAccount')}>
-                    <ButtonText className="text-emerald-400">Create Account</ButtonText>
+                    <ButtonText className="text-emerald-400">Cipta Akaun</ButtonText>
                   </Button> 
                 </>
               )}

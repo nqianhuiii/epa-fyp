@@ -18,7 +18,7 @@ export const fetchStudySessions = async(): Promise<StudySession[]> => {
           id: doc.id,
           title: data.title || '',
           teacherName: data.teacherName || '',
-          teacherImage: data.teacherImage || null,
+          tutorImage: data.tutorImage || null,
           date: data.date || '',
           time: data.time || '',
           description: data.description || '',
@@ -35,3 +35,43 @@ export const fetchStudySessions = async(): Promise<StudySession[]> => {
     }
 }
 
+export const fetchStudySessionsThisMonth = async (): Promise<StudySession[]> => {
+  try {
+    const q = query(
+      collection(db, 'studySessions'),
+      orderBy('createdAt', 'desc')
+    );
+
+    const querySnapshot = await getDocs(q);
+    const sessions: StudySession[] = [];
+
+    const now = new Date();
+    const currentMonth = now.getMonth();
+    const currentYear = now.getFullYear();
+
+    querySnapshot.forEach((doc) => {
+      const data = doc.data();
+      const parsedDate = new Date(data.date); // data.date is "Jun 30, 2025"
+
+      if (parsedDate.getMonth() === currentMonth && parsedDate.getFullYear() === currentYear) {
+        sessions.push({
+          id: doc.id,
+          title: data.title || '',
+          teacherName: data.teacherName || '',
+          tutorImage: data.tutorImage || null,
+          date: data.date || '',
+          time: data.time || '',
+          description: data.description || '',
+          meetingLink: data.meetingLink || null,
+          createdAt: data.createdAt || '',
+          updatedAt: data.updatedAt || '',
+        });
+      }
+    });
+
+    return sessions;
+  } catch (error) {
+    console.error('Error filtering sessions:', error);
+    throw new Error('Failed to fetch filtered sessions');
+  }
+};
