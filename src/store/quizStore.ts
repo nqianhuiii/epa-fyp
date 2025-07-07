@@ -121,7 +121,7 @@ export const useQuizStore = create<QuizStore>()(
     }),
     {
       name: 'quiz-storage',
-      storage: createJSONStorage(() => AsyncStorage), // ADD: This line to use AsyncStorage
+      storage: createJSONStorage(() => AsyncStorage), 
       partialize: (state) => ({
         attempts: state.attempts, // Only persist attempts
       }),
