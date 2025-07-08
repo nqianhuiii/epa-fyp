@@ -108,7 +108,7 @@ export default function Profile(){
                             </Avatar> 
                             <VStack space="sm" className="p-2 flex-1">
                                 <Heading size="md" className="flex-wrap">
-                                    {customUserData?.fullName || "Nama Pengguna"}
+                                    {customUserData?.fullName || "Nama Pernuh Pengguna"}
                                 </Heading>
                                 <Text size="sm" className="text-gray-600">
                                     @{customUserData?.userName || "username"}

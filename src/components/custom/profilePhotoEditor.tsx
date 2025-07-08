@@ -42,7 +42,6 @@ const ProfilePhotoEditor: React.FC<ProfilePhotoEditorProps> = ({
         {
           method: 'POST',
           body: formData,
-          // Remove Content-Type header - let FormData set it automatically
         }
       );
 

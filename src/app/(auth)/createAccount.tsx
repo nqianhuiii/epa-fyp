@@ -3,16 +3,15 @@ import { useState } from "react";
 import { KeyboardAvoidingView, Platform, SafeAreaView, ScrollView } from "react-native";
 import { Alert, AlertIcon, AlertText } from "../../components/ui/alert";
 import { Button, ButtonText } from "../../components/ui/button";
-import { FormControl, FormControlLabelText } from "../../components/ui/form-control";
 import { Heading } from "../../components/ui/heading";
 import { InfoIcon } from "../../components/ui/icon";
-import { Input, InputField, InputIcon, InputSlot } from "../../components/ui/input";
 import { Text } from "../../components/ui/text";
 import { VStack } from "../../components/ui/vstack";
 import { useAuthController } from "../../hooks/useAuthController";
 import CustomInputWithErrorMsg from "../../components/custom/customInputWithErrorMsg";
-import { Ionicons } from '@expo/vector-icons';
 import CustomActivityIndicator from "../../components/custom/customActivityIndicator";
+import { validateCreateProfileForm } from "../../utils/formValidation";
+import { useAlert } from "../../components/custom/alertProvider";
 
 export default function CreateAccount(){
     const [fullName, setFullName] = useState('');
@@ -22,10 +21,13 @@ export default function CreateAccount(){
     const [showPassword, setShowPassword] = useState(false);
     const [loading, setLoading] = useState(false);
     const [fullNameError, setFullNameError] = useState('');
-
+    const [userNameError, setUserNameError] = useState('');
+    const [emailError, setEmailError] = useState('');
+    const [passwordError, setPasswordError] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
     const [showError, setShowError] = useState(false);
     const {signUp} = useAuthController();
+    const { showAlert } = useAlert();
 
     const handleError = (message: string) => {
       console.log("Setting error:", message);
@@ -38,14 +40,22 @@ export default function CreateAccount(){
       }, 3000);
     }
 
+    const validateForm = () => {
+        const { isValid, errors } = validateCreateProfileForm(fullName, userName, email, password);
+        setFullNameError(errors.fullNameError);
+        setUserNameError(errors.userNameError);
+        setEmailError(errors.emailError);
+        setPasswordError(errors.passwordError)
+        return isValid;
+    }
+
     const handleSignUp = async() => {
+      if(!validateForm()) return;
+
       setLoading(true);
       await signUp(email, password, fullName, userName, handleError);
       setLoading(false);
-    }
-
-    const togglePasswordVisibility = () => {
-        setShowPassword((showState) => !showState);
+      showAlert("Pendaftaran berjaya! Sila semak emel untuk pengesahan", "success");
     }
 
     const router = useRouter();
@@ -71,69 +81,44 @@ export default function CreateAccount(){
                 <Text className="text-gray-500 text-base pt-4">Mari mulakan dengan akaun baharu anda!</Text>
 
                 <CustomInputWithErrorMsg
-                        label="Name Penuh"
-                        value={fullName}
-                        placeholder="Masukkan nama penuh anda"
-                        onChangeText={setFullName}
-                        error={fullNameError}
+                    label="Name Penuh"
+                    value={fullName}
+                    placeholder="Masukkan nama penuh anda"
+                    onChangeText={setFullName}
+                    error={fullNameError}
+                    required={true}
                 />
 
-                <FormControl className="mt-6">
-                    <FormControlLabelText className="text-xl text-black-900 mb-2">
-                        Nama Pengguna
-                    </FormControlLabelText>
-                </FormControl>
-                <Input className="rounded-xl h-11 bg-gray-100 border-0">
-                    <InputField
-                        value={userName}
-                        onChangeText={setUserName}
-                        type="text"
-                        autoCapitalize="none"
-                        autoCorrect={false}
-                        placeholder="Masukkan nama pengguna anda"
-                    />
-                </Input>
+                <CustomInputWithErrorMsg
+                    label="Nama Pengguna"
+                    value={userName}
+                    placeholder="Masukkan name pengguna anda"
+                    onChangeText={setUserName}
+                    error={userNameError}
+                    required={true}
+                />
 
-                <FormControl className="mt-6">
-                    <FormControlLabelText className="text-xl text-black-900 mb-2">
-                        Emel
-                    </FormControlLabelText>
-                </FormControl>
-                <Input className="rounded-xl h-11 bg-gray-100 border-0">
-                    <InputField
-                        value={email}
-                        onChangeText={setEmail}
-                        type="text"
-                        keyboardType="email-address"
-                        autoCapitalize="none"
-                        autoCorrect={false}
-                        placeholder="Masukkan emel anda"
-                    />
-                </Input>
+                <CustomInputWithErrorMsg
+                    label="Emel"
+                    value={email}
+                    placeholder="Masukkan emel anda"
+                    onChangeText={setEmail}
+                    error={emailError}
+                    required={true}
+                />
 
-                <FormControl className="mt-6">
-                    <FormControlLabelText className="text-xl text-black-900 mb-2">
-                        Kata Laluan
-                    </FormControlLabelText>
-                </FormControl>
-                <Input className="rounded-xl h-11 bg-gray-100 border-0">
-                    <InputField
-                        value={password}
-                        onChangeText={setPassword}
-                        type={showPassword ? "text" : "password"}
-                        secureTextEntry={!showPassword}
-                        autoCapitalize="none"
-                        autoCorrect={false}
-                        placeholder="Masukkan kata laluan anda"
-                    />
-                    <InputSlot className="pr-3" onPress={togglePasswordVisibility}>
-                        <Ionicons 
-                            name={showPassword ? "eye-outline" : "eye-off-outline"} 
-                            size={24} 
-                            color="gray" 
-                        />
-                    </InputSlot>
-                </Input>
+                <CustomInputWithErrorMsg
+                    label="Kata Laluan"
+                    value={password}
+                    onChangeText={setPassword}
+                    placeholder="Masukkan kata laluan anda"
+                    secureTextEntry={true}
+                    showTogglePassword={true}
+                    showPassword={showPassword}
+                    onTogglePasswordVisibility={() => setShowPassword(!showPassword)}
+                    required={true}
+                    error={passwordError}
+                />
 
                 {loading ? (
                     <CustomActivityIndicator/>

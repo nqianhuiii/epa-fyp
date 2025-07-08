@@ -12,6 +12,8 @@ import { VStack } from "../../components/ui/vstack";
 import { useAuthController } from "../../hooks/useAuthController";
 import { Ionicons } from '@expo/vector-icons';
 import CustomActivityIndicator from "../../components/custom/customActivityIndicator";
+import CustomInputWithErrorMsg from "../../components/custom/customInputWithErrorMsg";
+import { validateLoginForm } from "../../utils/formValidation";
 
 export default function SignIn(){
     const [email, setEmail] = useState('');
@@ -20,7 +22,9 @@ export default function SignIn(){
     const [loading, setLoading] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
     const [showError, setShowError] = useState(false);
-    const {signUp, signIn} = useAuthController();
+    const [emailError, setEmailError] = useState('');
+    const [passwordError, setPasswordError] = useState('');
+    const {signIn} = useAuthController();
 
 
     const handleError = (message: string) => {
@@ -34,11 +38,20 @@ export default function SignIn(){
         }, 3000);
     }
 
+    const validateForm = () => {
+      const { isValid, errors } = validateLoginForm(email);
+      setEmailError(errors.emailError);
+      // setPasswordError(errors.passwordError)
+      return isValid;
+    }
+
     const handleSignIn = async() => {
-        setLoading(true);
-        await signIn(email, password, handleError);
-        console.log("value of showError", showError);
-        setLoading(false);
+      if(!validateForm()) return;
+      setLoading(true);
+
+      await signIn(email, password, handleError);
+      console.log("value of showError", showError);
+      setLoading(false);
     }
 
     const togglePasswordVisibility = () => {
@@ -63,47 +76,27 @@ export default function SignIn(){
               <Heading className="text-3xl text-emerald-400">Log Masuk</Heading>
               <Text className="text-gray-500 text-base pt-4">Selemat Kembali ke EPA</Text>
 
-              <FormControl className="mt-8">
-                <FormControlLabelText className="text-xl text-black-900 mb-2">
-                  Emel
-                </FormControlLabelText>
-              </FormControl>
-              <Input className="rounded-xl h-11 bg-gray-100 border-0">
-                <InputField
-                  value={email}
-                  onChangeText={setEmail}
-                  type="text"
-                  keyboardType="email-address"
-                  autoCapitalize="none"
-                  autoCorrect={false}
-                  placeholder="Masukkan emel anda"              
-                />
-              </Input>
+              <CustomInputWithErrorMsg
+                label="Emel"
+                value={email}
+                placeholder="Masukkan emel anda"
+                onChangeText={setEmail}
+                error={emailError}
+                required={true}
+              />
 
-              <FormControl className="mt-6">
-                <FormControlLabelText className="text-xl text-black-900 mb-2">
-                  Kata Laluan
-                </FormControlLabelText>
-              </FormControl>
-              <Input className="rounded-xl h-11 bg-gray-100 border-0">
-                <InputField
-                  value={password}
-                  onChangeText={setPassword}
-                  type={showPassword ? "text" : "password"}
-                  secureTextEntry={!showPassword}
-                  autoCapitalize="none"
-                  autoCorrect={false}
-                  placeholder="Masukkan kata laluan"
-                />
-                <InputSlot className="pr-3" onPress={togglePasswordVisibility}>
-                  <Ionicons 
-                    name={showPassword ? "eye-outline" : "eye-off-outline"} 
-                    size={24} 
-                    color="gray" 
-                  />
-                </InputSlot>
-              </Input>
-
+              <CustomInputWithErrorMsg
+                label="Kata Laluan"
+                value={password}
+                onChangeText={setPassword}
+                placeholder="Masukkan kata laluan anda"
+                secureTextEntry={true}
+                showTogglePassword={true}
+                showPassword={showPassword}
+                onTogglePasswordVisibility={() => setShowPassword(!showPassword)}
+                required={true}
+                error={passwordError}
+              />
               {loading ? (
                 <CustomActivityIndicator/>
               ) : (

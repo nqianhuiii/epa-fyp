@@ -136,7 +136,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
               ? 'bg-red-500' 
               : isTranscribing 
                 ? 'bg-blue-400'
-                : 'bg-gray-400'
+                : 'bg-white border border-blue-500'
             }
           `}
         >
